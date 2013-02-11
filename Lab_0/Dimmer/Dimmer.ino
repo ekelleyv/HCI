@@ -1,17 +1,19 @@
 //Flex sensor mapping
 //adapted from http://garagelab.com/profiles/blogs/tutorial-flex-sensor-with-arduino
-
+/*
+Light based laser tags.
+*/
 int max_val = 120;
 
 int red = 3;
-int yellow = 6; 
+int green = 6; 
 
 void setup()
 {
     // initialize serial communications
     Serial.begin(9600); 
     pinMode(red, OUTPUT);
-    pinMode(yellow, OUTPUT);
+    pinMode(green, OUTPUT);
 }
 
 void loop()
@@ -22,9 +24,6 @@ void loop()
     sensor = analogRead(2);
 
     deg = map(sensor, 640, 700, -1*max_val, max_val);
-    // note that the above numbers are ideal, your sensor's values will vary
-    // to improve the accuracy, run the program, note your sensor's analog values
-    // when it's straight and bent, and insert those values into the above function.
 
     // print out the result
     Serial.print("analog input: ");
@@ -34,10 +33,10 @@ void loop()
     
     if (deg < 0) {
       controlRed(abs(deg));
-      controlYellow(0);
+      controlGreen(0);
     }
     else {
-      controlYellow(deg);
+      controlGreen(deg);
       controlRed(0);
     }
 
@@ -46,15 +45,11 @@ void loop()
 }
 
 // Yellow LED control
-void controlYellow(int index) {
-// Serial.print("Setting yellow to ");
-// Serial.println(index, DEC);
+void controlGreen(int index) {
  analogWrite(yellow, min(index, 255));
 }
 
 // Red LED control
 void controlRed(int index) {
-// Serial.print("Setting red to ");
-// Serial.println(index, DEC);
  analogWrite(red, min(index, 255));
 }
