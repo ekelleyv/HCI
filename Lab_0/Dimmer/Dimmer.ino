@@ -1,4 +1,5 @@
-//Adapted from http://garagelab.com/profiles/blogs/tutorial-flex-sensor-with-arduino
+//Flex sensor mapping
+//adapted from http://garagelab.com/profiles/blogs/tutorial-flex-sensor-with-arduino
 
 int max_val = 120;
 
