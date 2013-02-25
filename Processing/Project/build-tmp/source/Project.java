@@ -26,7 +26,7 @@ public class Project extends PApplet {
  // the NyARToolkit Processing library
  // the GSVideo library
 
-boolean show_video = false;
+boolean show_video = true;
 MultiMarker nya;
 GSCapture cam;
 
@@ -165,54 +165,54 @@ class ARObject {
     scale(1, -1); // turn things upside down to work intuitively for Processing users
 
     // hover the cube a little above the real-world marker image
-    translate(0, 0, 5);
+    translate(0, 0, 30);
 
     // rotate the cube in 3 dimensions
-    // rotateX(rot.x);
-    // rotateY(rot.y);
-    // rotateZ(rot.z);
+    rotateX(rot.x);
+    rotateY(rot.y);
+    rotateZ(rot.z);
 
     // // scale - as with the the color range - to save typing with the coordinates (and make it much easier to change the size)
-    // scale(50);
-    textSize(40);
-    fill(0, 1, 1);
-    text(ID, 0, 0);
+    scale(15);
+    // textSize(40);
+    // fill(0, 1, 1);
+    // text(ID, 0, 0);
 
     // a cube made out of 6 quads
     // the 1 range can be used for both the color and the coordinates as a result of color range and scale (see earlier)
-    // beginShape(QUADS);
+    beginShape(QUADS);
 
-    // fill(0, 1, 1); vertex(-1,  1,  1);
-    // fill(1, 1, 1); vertex( 1,  1,  1);
-    // fill(1, 0, 1); vertex( 1, -1,  1);
-    // fill(0, 0, 1); vertex(-1, -1,  1);
+    fill(0, 1, 1); vertex(-1,  1,  1);
+    fill(1, 1, 1); vertex( 1,  1,  1);
+    fill(1, 0, 1); vertex( 1, -1,  1);
+    fill(0, 0, 1); vertex(-1, -1,  1);
   
-    // fill(1, 1, 1); vertex( 1,  1,  1);
-    // fill(1, 1, 0); vertex( 1,  1, -1);
-    // fill(1, 0, 0); vertex( 1, -1, -1);
-    // fill(1, 0, 1); vertex( 1, -1,  1);
+    fill(1, 1, 1); vertex( 1,  1,  1);
+    fill(1, 1, 0); vertex( 1,  1, -1);
+    fill(1, 0, 0); vertex( 1, -1, -1);
+    fill(1, 0, 1); vertex( 1, -1,  1);
 
-    // fill(1, 1, 0); vertex( 1,  1, -1);
-    // fill(0, 1, 0); vertex(-1,  1, -1);
-    // fill(0, 0, 0); vertex(-1, -1, -1);
-    // fill(1, 0, 0); vertex( 1, -1, -1);
+    fill(1, 1, 0); vertex( 1,  1, -1);
+    fill(0, 1, 0); vertex(-1,  1, -1);
+    fill(0, 0, 0); vertex(-1, -1, -1);
+    fill(1, 0, 0); vertex( 1, -1, -1);
 
-    // fill(0, 1, 0); vertex(-1,  1, -1);
-    // fill(0, 1, 1); vertex(-1,  1,  1);
-    // fill(0, 0, 1); vertex(-1, -1,  1);
-    // fill(0, 0, 0); vertex(-1, -1, -1);
+    fill(0, 1, 0); vertex(-1,  1, -1);
+    fill(0, 1, 1); vertex(-1,  1,  1);
+    fill(0, 0, 1); vertex(-1, -1,  1);
+    fill(0, 0, 0); vertex(-1, -1, -1);
 
-    // fill(0, 1, 0); vertex(-1,  1, -1);
-    // fill(1, 1, 0); vertex( 1,  1, -1);
-    // fill(1, 1, 1); vertex( 1,  1,  1);
-    // fill(0, 1, 1); vertex(-1,  1,  1);
+    fill(0, 1, 0); vertex(-1,  1, -1);
+    fill(1, 1, 0); vertex( 1,  1, -1);
+    fill(1, 1, 1); vertex( 1,  1,  1);
+    fill(0, 1, 1); vertex(-1,  1,  1);
 
-    // fill(0, 0, 0); vertex(-1, -1, -1);
-    // fill(1, 0, 0); vertex( 1, -1, -1);
-    // fill(1, 0, 1); vertex( 1, -1,  1);
-    // fill(0, 0, 1); vertex(-1, -1,  1);
+    fill(0, 0, 0); vertex(-1, -1, -1);
+    fill(1, 0, 0); vertex( 1, -1, -1);
+    fill(1, 0, 1); vertex( 1, -1,  1);
+    fill(0, 0, 1); vertex(-1, -1,  1);
 
-    // endShape();
+    endShape();
   }
 }
   static public void main(String[] passedArgs) {

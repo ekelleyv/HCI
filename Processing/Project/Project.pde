@@ -6,7 +6,7 @@ import processing.opengl.*; // for OPENGL rendering
 import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 import codeanticode.gsvideo.*; // the GSVideo library
 
-boolean show_video = false;
+boolean show_video = true;
 MultiMarker nya;
 GSCapture cam;
 
