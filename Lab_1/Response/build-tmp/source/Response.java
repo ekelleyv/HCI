@@ -17,9 +17,9 @@ public class Response extends PApplet {
 
 // Graphing sketch
 //Adapted from http://arduino.cc/en/Tutorial/Graph 
- 
- 
- 
+
+
+
  Serial myPort;        // The serial port
  int xPos = 1;         // horizontal position of the graph
 
@@ -46,8 +46,8 @@ public class Response extends PApplet {
 	 myPort.bufferUntil('\n');
 	 // set inital background:
 	 background(224,228,204); 
- }
- public void draw () {
+	}
+	public void draw () {
  	// everything happens in the serialEvent()
  }
  
@@ -59,18 +59,18 @@ public class Response extends PApplet {
 		 // trim off any whitespace:
 		 inString = trim(inString);
 
-		if (inString.length() != 0) {
-		 String[] sensor_strings = inString.split(" ");
-		 
-		 if (sensor_strings.length < 3) {
-		 	println("RETURN");
-		 	return;
-		 }
+		 if (inString.length() != 0) {
+		 	String[] sensor_strings = inString.split(" ");
+		 	
+		 	if (sensor_strings.length < 3) {
+		 		println("RETURN");
+		 		return;
+		 	}
 
-		float inByte = PApplet.parseFloat(sensor_strings[0]); 
-		inByte = map(inByte, 0, 1023, 0, height/3);
+		 	float inByte = PApplet.parseFloat(sensor_strings[0]); 
+		 	inByte = map(inByte, 0, 1023, 0, height/3);
 
-		float yPos = height;
+		 	float yPos = height;
 		// draw the line:
 		stroke(105,210,231);
 		line(xPos, yPos, xPos, yPos - inByte);
@@ -103,23 +103,23 @@ public class Response extends PApplet {
 
 		 // at the edge of the screen, go back to the beginning:
 		 if (xPos >= width) {
-			 xPos = 0;
-			 max_pos = yPos-inByte;
-			 min_pos = yPos-inByte;
-			 background(224,228,204); 
+		 	xPos = 0;
+		 	max_pos = yPos-inByte;
+		 	min_pos = yPos-inByte;
+		 	background(224,228,204); 
 		 } 
 		 else {
 		 // increment the horizontal position:
 		 xPos++;
-		 }
 		}
-	 }
- }
+	}
+}
+}
 
- public void drawMax(float max_pos) {
- 	stroke(255, 0, 0);
- 	ellipse(xPos, max_pos, 2, 2);
- }
+public void drawMax(float max_pos) {
+	stroke(255, 0, 0);
+	ellipse(xPos, max_pos, 2, 2);
+}
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Response" };
     if (passedArgs != null) {
