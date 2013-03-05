@@ -12,7 +12,11 @@
  
 int speakerPin = 7;
 
-int threshold = 3000;
+int knobPin = 1;
+
+int threshold = 5000;
+
+int knobVal = 0;
 
 
 CapacitiveSensor   cs_0 = CapacitiveSensor(3,8);        // 10 megohm resistor between pins 4 & 2, pin 2 is sensor pin, add wire, foil
@@ -38,10 +42,11 @@ void playNote(char note, int duration) {
 
   // play the tone corresponding to the note name
   for (int i = 0; i < 8; i++) {
-    if (names[i] == note) {
-      playTone(tones[i], duration);
+      if (names[i] == note) {
+  //      playTone(tones[i] + (knobVal-512), duration);
+          tone(speakerPin, tones[i] + (knobVal-512)*.5);
+      }
     }
-  }
 }
 
 
@@ -55,27 +60,19 @@ void setup()
    cs_6.set_CS_AutocaL_Millis(0xFFFFFFFF);
    
    pinMode(speakerPin, OUTPUT);
+  
    
    Serial.begin(9600);
 
 }
 
-//void loop() {
-//  for (int i = 0; i < length; i++) {
-//    if (notes[i] == ' ') {
-//      delay(beats[i] * tempo); // rest
-//    } else {
-//      playNote(notes[i], beats[i] * tempo);
-//    }
-//
-//    // pause between notes
-//    delay(tempo / 2); 
-//  }
-//}
-
 void loop()                    
 {
 //    long start = millis();
+    
+    knobVal = analogRead(knobPin);
+    boolean note_playing = false;
+    
     
     long total_0 =  cs_0.capacitiveSensor(30);
     
@@ -85,6 +82,8 @@ void loop()
     
     long total_6 =  cs_6.capacitiveSensor(30);
     
+    Serial.print(knobVal);
+    Serial.print("\t");
     Serial.print(total_0);
     Serial.print("\t");
     Serial.print(total_2);
@@ -94,19 +93,27 @@ void loop()
     Serial.println(total_6);
     
     if (total_0 > threshold) {
+     note_playing = true;
      playNote('c', 100); 
     }
     
     if (total_2 > threshold) {
+     note_playing = true;
      playNote('d', 100); 
     }
     
     if (total_4 > threshold) {
+     note_playing = true;
      playNote('e', 100); 
     }
     
     if (total_6 > threshold) {
+     note_playing = true;
      playNote('f', 100); 
+    }
+    
+    if (!note_playing) {
+     noTone(speakerPin); 
     }
     
 
