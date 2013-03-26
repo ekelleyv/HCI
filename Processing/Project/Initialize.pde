@@ -9,9 +9,5 @@ class Initialize {
 		int start = millis();
 		int init_length = 10000;
 		init_grid.display();
-
-		// while (millis() < (start + init_length)) {
-		// 	delay(10);
-		// }
 	}
 }
