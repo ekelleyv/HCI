@@ -44,8 +44,8 @@ class Detect {
 			// draw each vector both textually and with a red dot
 			for (int j=0; j<pos2d.length; j++) {
 				String s = j + " : (" + int(pos2d[j].x) + "," + int(pos2d[j].y) + ")";
-				fill(255);
-				rect(pos2d[j].x, pos2d[j].y, textWidth(s) + 3, textAscent() + textDescent() + 3);
+				// fill(255);
+				// rect(pos2d[j].x, pos2d[j].y, textWidth(s) + 3, textAscent() + textDescent() + 3);
 				fill(0);
 				text(s, pos2d[j].x + 2, pos2d[j].y + 2);
 				fill(255, 0, 0);

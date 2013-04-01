@@ -4,6 +4,8 @@
 import java.io.*; // for the loadPatternFilenames() function
 import processing.opengl.*; // for OPENGL rendering
 import codeanticode.gsvideo.*; // the GSVideo library
+import com.shigeodayo.pframe.*;
+
 
 Detect ar_detect;
 Capture cam;
@@ -14,39 +16,64 @@ int arWidth = 640;
 int arHeight = 480;
 boolean init_on = false;
 
+SecondApplet secondApplet = null;
+PFrame secondFrame = null;
+
 
 
 void setup() {
   //Create display
-  size(displayWidth, displayHeight);
+  // size(displayWidth, displayHeight);
+  size(640, 480);
   println("Setting up");
+
 
   //Create init object
   init = new Initialize();
 
   //Create camera object
   String[] cameras = Capture.list();
-  cam = new Capture(this, cameras[0]);
+  println(cameras);
+  cam = new Capture(this, cameras[12]);
   cam.start();
 
-  //Create detect object
+    //Create detect object
   ar_detect = new Detect(this, arWidth, arHeight, camPara, patternPath);
 
+  secondApplet = new SecondApplet();
+  secondFrame = new PFrame(secondApplet, 210, 0);
+  secondFrame.setTitle("Second Frame");
+
+}
+
+// second Processing applet
+private class SecondApplet extends PApplet {
+  
+  void setup() {
+    size(1280, 1024);
+    background(0);
+  }  
+  
+  void draw() {
+    PGraphics pg = createGraphics(width, height);
+    pg.beginDraw();
+    pg.background(0);
+    pg.endDraw();
+    init.run(pg);
+    image(pg, 0, 0);
+  }
+  
 }
 
 void draw() {
-  // init_grid.display();
-  if (!init_on) {
     if (cam.available() == true) {
       cam.read();
+      image(cam, 0, 0, width, height);
+      ar_detect.run(cam);
+      ar_detect.draw_markers();
     }
-    background(0);
-    image(cam, 0, 0, width, height);
+
   }
-  else {
-    init.run();
-  }
-}
 
 void keyPressed() {
   init_on = !init_on;
