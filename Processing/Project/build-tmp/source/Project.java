@@ -38,16 +38,21 @@ int arWidth = 640;
 int arHeight = 480;
 boolean init_on = false;
 
-SecondApplet secondApplet = null;
-PFrame secondFrame = null;
+DispApplet disp_applet = null;
+PFrame disp_frame = null;
+
+PGraphics proj_buffer;
+PGraphics disp_buffer;
 
 
 
 public void setup() {
   //Create display
   // size(displayWidth, displayHeight);
-  size(640, 480);
+  size(1280, 1024);
   println("Setting up");
+  frameRate(30);
+  frame.setTitle("Projector");
 
 
   //Create init object
@@ -55,50 +60,54 @@ public void setup() {
 
   //Create camera object
   String[] cameras = Capture.list();
-  println(cameras);
-  cam = new Capture(this, cameras[12]);
+  // println(cameras);
+  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
   cam.start();
 
     //Create detect object
   ar_detect = new Detect(this, arWidth, arHeight, camPara, patternPath);
 
-  secondApplet = new SecondApplet();
-  secondFrame = new PFrame(secondApplet, 210, 0);
-  secondFrame.setTitle("Second Frame");
+  disp_applet = new DispApplet();
+  disp_frame = new PFrame(disp_applet, 210, 0);
+  disp_frame.setTitle("Display");
 
-}
-
-// second Processing applet
-private class SecondApplet extends PApplet {
-  
-  public void setup() {
-    size(1280, 1024);
-    background(0);
-  }  
-  
-  public void draw() {
-    PGraphics pg = createGraphics(width, height);
-    pg.beginDraw();
-    pg.background(0);
-    pg.endDraw();
-    init.run(pg);
-    image(pg, 0, 0);
-  }
-  
 }
 
 public void draw() {
-    if (cam.available() == true) {
-      cam.read();
-      image(cam, 0, 0, width, height);
-      ar_detect.run(cam);
-      ar_detect.draw_markers();
-    }
+    init.run();
+}
 
-  }
+
+
 
 public void keyPressed() {
   init_on = !init_on;
+}
+
+
+// second Processing applet
+private class DispApplet extends PApplet {
+  
+  public void setup() {
+    size(640, 480);
+    background(255, 0, 0);
+    frameRate(30);
+    disp_buffer = createGraphics(640, 480);
+  } 
+
+  public void draw() {
+    if (cam.available() == true) {
+      disp_buffer.beginDraw();
+      cam.read();
+      disp_buffer.image(cam, 0, 0, width, height);
+      ar_detect.run(cam);
+      ar_detect.draw_markers(disp_buffer);
+      disp_buffer.endDraw();
+      image(disp_buffer, 0, 0);
+    }
+
+  }
+  
 }
 
  // the NyARToolkit Processing library
@@ -138,7 +147,7 @@ class Detect {
 		nya.detect(cam_image);
 	}
 
-	public void draw_markers() {
+	public void draw_markers(PGraphics pg) {
 		for (int i = 0; i < num_markers; i++) {
 			if ((!nya.isExistMarker(i))) { continue; } //Continue if marker does not exist
 
@@ -148,10 +157,10 @@ class Detect {
 				String s = j + " : (" + PApplet.parseInt(pos2d[j].x) + "," + PApplet.parseInt(pos2d[j].y) + ")";
 				// fill(255);
 				// rect(pos2d[j].x, pos2d[j].y, textWidth(s) + 3, textAscent() + textDescent() + 3);
-				fill(0);
-				text(s, pos2d[j].x + 2, pos2d[j].y + 2);
-				fill(255, 0, 0);
-				ellipse(pos2d[j].x, pos2d[j].y, 5, 5);
+				pg.fill(0);
+				pg.text(s, pos2d[j].x + 2, pos2d[j].y + 2);
+				pg.fill(255, 0, 0);
+				pg.ellipse(pos2d[j].x, pos2d[j].y, 5, 5);
 			}
 		}
 	}
@@ -192,17 +201,15 @@ class Grid {
 		}
 	}
 
-	public void generate_display(PGraphics pg) {
-		pg.beginDraw();
-		pg.background(255);
+	public void generate_display() {
+		background(255);
 		int x_space = (int)width/(col + 1);
 		int y_space = (int)height/(row + 1);
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
-				pg.image(ar_images.get((i*col) + j), (j + 1)*x_space - marker_width/2, (i + 1)*y_space - marker_width/2, marker_width, marker_width);
+				image(ar_images.get((i*col) + j), (j + 1)*x_space - marker_width/2, (i + 1)*y_space - marker_width/2, marker_width, marker_width);
 			}
 		}
-		pg.endDraw();
 	}
 }
 class Initialize {
@@ -212,10 +219,10 @@ class Initialize {
 		init_grid = new Grid(5, 5, 80);
 	}
 
-	public void run(PGraphics pg) {
+	public void run () {
 		int start = millis();
 		int init_length = 10000;
-		// init_grid.generate_display(pg);
+		init_grid.generate_display();
 	}
 }
   static public void main(String[] passedArgs) {

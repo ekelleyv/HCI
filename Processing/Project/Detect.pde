@@ -36,7 +36,7 @@ class Detect {
 		nya.detect(cam_image);
 	}
 
-	void draw_markers() {
+	void draw_markers(PGraphics pg) {
 		for (int i = 0; i < num_markers; i++) {
 			if ((!nya.isExistMarker(i))) { continue; } //Continue if marker does not exist
 
@@ -46,10 +46,10 @@ class Detect {
 				String s = j + " : (" + int(pos2d[j].x) + "," + int(pos2d[j].y) + ")";
 				// fill(255);
 				// rect(pos2d[j].x, pos2d[j].y, textWidth(s) + 3, textAscent() + textDescent() + 3);
-				fill(0);
-				text(s, pos2d[j].x + 2, pos2d[j].y + 2);
-				fill(255, 0, 0);
-				ellipse(pos2d[j].x, pos2d[j].y, 5, 5);
+				pg.fill(0);
+				pg.text(s, pos2d[j].x + 2, pos2d[j].y + 2);
+				pg.fill(255, 0, 0);
+				pg.ellipse(pos2d[j].x, pos2d[j].y, 5, 5);
 			}
 		}
 	}

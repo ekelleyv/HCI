@@ -16,16 +16,21 @@ int arWidth = 640;
 int arHeight = 480;
 boolean init_on = false;
 
-SecondApplet secondApplet = null;
-PFrame secondFrame = null;
+DispApplet disp_applet = null;
+PFrame disp_frame = null;
+
+PGraphics proj_buffer;
+PGraphics disp_buffer;
 
 
 
 void setup() {
   //Create display
   // size(displayWidth, displayHeight);
-  size(640, 480);
+  size(1280, 1024);
   println("Setting up");
+  frameRate(30);
+  frame.setTitle("Projector");
 
 
   //Create init object
@@ -33,48 +38,52 @@ void setup() {
 
   //Create camera object
   String[] cameras = Capture.list();
-  println(cameras);
-  cam = new Capture(this, cameras[12]);
+  // println(cameras);
+  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
   cam.start();
 
     //Create detect object
   ar_detect = new Detect(this, arWidth, arHeight, camPara, patternPath);
 
-  secondApplet = new SecondApplet();
-  secondFrame = new PFrame(secondApplet, 210, 0);
-  secondFrame.setTitle("Second Frame");
+  disp_applet = new DispApplet();
+  disp_frame = new PFrame(disp_applet, 210, 0);
+  disp_frame.setTitle("Display");
 
-}
-
-// second Processing applet
-private class SecondApplet extends PApplet {
-  
-  void setup() {
-    size(1280, 1024);
-    background(0);
-  }  
-  
-  void draw() {
-    PGraphics pg = createGraphics(width, height);
-    pg.beginDraw();
-    pg.background(0);
-    pg.endDraw();
-    init.run(pg);
-    image(pg, 0, 0);
-  }
-  
 }
 
 void draw() {
-    if (cam.available() == true) {
-      cam.read();
-      image(cam, 0, 0, width, height);
-      ar_detect.run(cam);
-      ar_detect.draw_markers();
-    }
+    init.run();
+}
 
-  }
+
+
 
 void keyPressed() {
   init_on = !init_on;
+}
+
+
+// second Processing applet
+private class DispApplet extends PApplet {
+  
+  void setup() {
+    size(640, 480);
+    background(255, 0, 0);
+    frameRate(30);
+    disp_buffer = createGraphics(640, 480);
+  } 
+
+  void draw() {
+    if (cam.available() == true) {
+      disp_buffer.beginDraw();
+      cam.read();
+      disp_buffer.image(cam, 0, 0, width, height);
+      ar_detect.run(cam);
+      ar_detect.draw_markers(disp_buffer);
+      disp_buffer.endDraw();
+      image(disp_buffer, 0, 0);
+    }
+
+  }
+  
 }

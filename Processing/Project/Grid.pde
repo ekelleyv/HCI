@@ -23,16 +23,14 @@ class Grid {
 		}
 	}
 
-	void generate_display(PGraphics pg) {
-		pg.beginDraw();
-		pg.background(255);
+	void generate_display() {
+		background(255);
 		int x_space = (int)width/(col + 1);
 		int y_space = (int)height/(row + 1);
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
-				pg.image(ar_images.get((i*col) + j), (j + 1)*x_space - marker_width/2, (i + 1)*y_space - marker_width/2, marker_width, marker_width);
+				image(ar_images.get((i*col) + j), (j + 1)*x_space - marker_width/2, (i + 1)*y_space - marker_width/2, marker_width, marker_width);
 			}
 		}
-		pg.endDraw();
 	}
 }
