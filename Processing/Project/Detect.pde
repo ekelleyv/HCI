@@ -5,7 +5,7 @@ class Detect {
 	MultiMarker nya;
 	int cam_width;
 	int cam_height;
-	int num_markers = 10; //Update to how many markers we use
+	int num_markers = 40; //Update to how many markers we use
 	String cam_param;
 	String pattern_filepath;
 	String[] patterns; 

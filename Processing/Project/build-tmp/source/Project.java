@@ -34,8 +34,13 @@ Capture cam;
 Initialize init;
 String camPara = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/data/camera_para.dat";
 String patternPath = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns";
-int arWidth = 640;
-int arHeight = 480;
+
+
+int cam_width = 1280;
+int cam_height = 960;
+
+int proj_width = 1280;
+int proj_height = 1024;
 boolean init_on = false;
 
 DispApplet disp_applet = null;
@@ -44,12 +49,13 @@ PFrame disp_frame = null;
 PGraphics proj_buffer;
 PGraphics disp_buffer;
 
+Assembly assembly;
+
 
 
 public void setup() {
   //Create display
-  // size(displayWidth, displayHeight);
-  size(1280, 1024);
+  size(proj_width, proj_height);
   println("Setting up");
   frameRate(30);
   frame.setTitle("Projector");
@@ -60,21 +66,24 @@ public void setup() {
 
   //Create camera object
   String[] cameras = Capture.list();
-  // println(cameras);
-  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
+  println(cameras);
+  cam = new Capture(this, cameras[12]); //0 is iSight 12 is USB
   cam.start();
 
     //Create detect object
-  ar_detect = new Detect(this, arWidth, arHeight, camPara, patternPath);
+  ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
 
   disp_applet = new DispApplet();
   disp_frame = new PFrame(disp_applet, 210, 0);
   disp_frame.setTitle("Display");
 
+  assembly = new Assembly(proj_width, proj_height);
+
 }
 
 public void draw() {
-    init.run();
+    // init.run();
+    assembly.update();
 }
 
 
@@ -89,17 +98,17 @@ public void keyPressed() {
 private class DispApplet extends PApplet {
   
   public void setup() {
-    size(640, 480);
+    size(cam_width, cam_height);
     background(255, 0, 0);
     frameRate(30);
-    disp_buffer = createGraphics(640, 480);
+    disp_buffer = createGraphics(cam_width, cam_height);
   } 
 
   public void draw() {
     if (cam.available() == true) {
       disp_buffer.beginDraw();
       cam.read();
-      disp_buffer.image(cam, 0, 0, width, height);
+      disp_buffer.image(cam, 0, 0, cam_width, cam_height);
       ar_detect.run(cam);
       ar_detect.draw_markers(disp_buffer);
       disp_buffer.endDraw();
@@ -109,6 +118,111 @@ private class DispApplet extends PApplet {
   }
   
 }
+class Assembly {
+
+  int regA;
+  int regB;
+  int regC;
+  int regD;
+  int im_width;
+  int im_height;
+  int[] output;
+  int output_count;
+
+  Assembly (int im_width, int int_height) {
+    output = new int[10];
+    output_count = 0;
+    this.im_width = im_width;
+    this.im_height = im_height;
+    regA = 0;
+    regB = 0;
+    regC = 0;
+    regD = 0;
+  }
+
+  public void update() {
+    draw_grid();
+    update_reg_vals();
+    draw_output();
+  }
+
+  public void add_output(int val) {
+    if (output_count == output.length) {
+      output = expand(output);
+    }
+    output[output_count++] = val;
+  }
+
+  public void draw_grid() {
+    background(0);
+    noFill();
+
+    //Border
+    stroke(255);
+    strokeWeight(10);
+    rect(10, 10, width-15, height-15);
+
+    //Center Line
+    fill(255, 255, 255);
+    line(width/2-5, 10, width/2-5, height);
+
+    //Code header
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("Code", width/4, 40);
+
+    //Memory/Output Line
+    line(width/2, height/4, width, height/4);
+
+    text("Output", 3*width/4, height/4 + 40);
+
+    fill(217, 105, 0);
+    rect(width/2, 10, width/8-9, height/4-10);
+    fill(255, 187, 0);
+    rect(5*width/8, 10, width/8-9, height/4-10);
+    fill(217, 102, 111);
+    rect(6*width/8, 10, width/8-9, height/4-10);
+    fill(4, 117, 100);
+    rect(7*width/8, 10, width/8-9, height/4-10);
+
+
+    fill(255);
+    text("A", 9*width/16, 40);
+    text("B", 11*width/16, 40);
+    text("C", 13*width/16, 40);
+    text("D", 15*width/16, 40);
+  }
+
+  public void update_reg_vals() {
+    draw_val(regA, 0);
+    draw_val(regB, 1);
+    draw_val(regC, 2);
+    draw_val(regD, 3);
+  }
+
+  public void draw_val(int val, int num) {
+    int offset = num*2+9;
+    fill(255);
+    textSize(64);
+    if (val > 1000) {
+      textSize(40);
+    }
+    text(val, offset*width/16, 120);
+  }
+
+  public void draw_output() {
+    fill(255);
+    textSize(32);
+    int output_start = output_count - 15;
+    if (output_start < 0) {
+      output_start = 0;
+    }
+    for (int i = output_start; i < output_count; i++) {
+      text(output[i], width/2+80, height/4+80 + (i-output_start)*32);
+    }
+  }
+
+}
 
  // the NyARToolkit Processing library
 
@@ -116,7 +230,7 @@ class Detect {
 	MultiMarker nya;
 	int cam_width;
 	int cam_height;
-	int num_markers = 10; //Update to how many markers we use
+	int num_markers = 40; //Update to how many markers we use
 	String cam_param;
 	String pattern_filepath;
 	String[] patterns; 
