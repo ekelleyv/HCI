@@ -1,5 +1,3 @@
-import processing.video.*;
-import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 import java.util.ArrayList;
 
 public class TagLibrary {
