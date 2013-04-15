@@ -8,7 +8,8 @@ class Detect {
 	int num_markers = 40; //Update to how many markers we use
 	String cam_param;
 	String pattern_filepath;
-	String[] patterns; 
+	String[] patterns;
+	Arraylist<Marker> marker_list;
 
 	Detect (Project project, int cam_width, int cam_height, String cam_param, String pattern_filepath) {
 		this.cam_width = cam_width;
@@ -36,12 +37,22 @@ class Detect {
 		nya.detect(cam_image);
 	}
 
-	void draw_markers(PGraphics pg) {
+	void detect_tags(PGraphics pg) {
 		for (int i = 0; i < num_markers; i++) {
 			if ((!nya.isExistMarker(i))) { continue; } //Continue if marker does not exist
 
 			PVector[] pos2d = nya.getMarkerVertex2D(i);
 			// draw each vector both textually and with a red dot
+
+			println("POS2D is of length " + pos2d.length);
+
+			//Simple average
+			center_x = pos2d[0].x + (pos2d[4].x - pos2d[0].x)/2;
+			center_y = pos2d[0].y + (pos2d[4].y - pos2d[0].y)/2;
+
+			fill(0, 255, 0);
+			pg.ellipse(center_x, center_y, 5, 5);
+
 			for (int j=0; j<pos2d.length; j++) {
 				String s = j + " : (" + int(pos2d[j].x) + "," + int(pos2d[j].y) + ")";
 				// fill(255);

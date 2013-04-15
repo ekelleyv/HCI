@@ -1,6 +1,6 @@
 // Augmented Reality RGBCube OOP Example by Amnon Owed (21/12/11)
 // Processing 1.5.1 + NyARToolkit 1.1.6 + GSVideo 1.0
- 
+
 import java.io.*; // for the loadPatternFilenames() function
 import processing.opengl.*; // for OPENGL rendering
 import codeanticode.gsvideo.*; // the GSVideo library
@@ -51,6 +51,8 @@ void setup() {
     //Create detect object
   ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
 
+
+  disp_buffer = createGraphics(cam_width, cam_height);
   disp_applet = new DispApplet();
   disp_frame = new PFrame(disp_applet, 210, 0);
   disp_frame.setTitle("Display");
@@ -60,7 +62,15 @@ void setup() {
 }
 
 void draw() {
-    // init.run();
+    //Tag detection and update buffer
+    if (cam.available() == true) {
+      disp_buffer.beginDraw();
+      cam.read();
+      disp_buffer.image(cam, 0, 0, cam_width, cam_height);
+      ar_detect.run(cam);
+      ar_detect.detect_tags(disp_buffer);
+      disp_buffer.endDraw();
+    }
     assembly.update();
 }
 
@@ -74,25 +84,13 @@ void keyPressed() {
 
 // second Processing applet
 private class DispApplet extends PApplet {
-  
   void setup() {
     size(cam_width, cam_height);
     background(255, 0, 0);
     frameRate(30);
-    disp_buffer = createGraphics(cam_width, cam_height);
-  } 
+  }
 
   void draw() {
-    if (cam.available() == true) {
-      disp_buffer.beginDraw();
-      cam.read();
-      disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-      ar_detect.run(cam);
-      ar_detect.draw_markers(disp_buffer);
-      disp_buffer.endDraw();
-      image(disp_buffer, 0, 0);
-    }
-
+    image(disp_buffer, 0, 0);
   }
-  
 }
