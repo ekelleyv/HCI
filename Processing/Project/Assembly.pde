@@ -9,7 +9,7 @@ class Assembly {
   int[] output;
   int output_count;
 
-  Assembly (int im_width, int int_height) {
+  Assembly (int im_width, int im_height) {
     output = new int[10];
     output_count = 0;
     this.im_width = im_width;
@@ -20,10 +20,11 @@ class Assembly {
     regD = 0;
   }
 
-  void update() {
-    draw_grid();
-    update_reg_vals();
-    draw_output();
+  void update(PGraphics pg, int[] regs) {
+    pg.beginDraw();
+    draw_grid(pg);
+    update_reg_vals(pg, regs);
+    draw_output(pg);
   }
 
   void add_output(int val) {
@@ -33,7 +34,7 @@ class Assembly {
     output[output_count++] = val;
   }
 
-  void draw_grid() {
+  void draw_grid(PGraphics pg) {
     background(0);
     noFill();
 
@@ -73,11 +74,11 @@ class Assembly {
     text("D", 15*width/16, 40);
   }
 
-  void update_reg_vals() {
-    draw_val(regA, 0);
-    draw_val(regB, 1);
-    draw_val(regC, 2);
-    draw_val(regD, 3);
+  void update_reg_vals(PGraphics pg, int[] regs) {
+    draw_val(regA, regs[0]);
+    draw_val(regB, regs[1]);
+    draw_val(regC, regs[2]);
+    draw_val(regD, regs[3];
   }
 
   void draw_val(int val, int num) {
@@ -90,7 +91,7 @@ class Assembly {
     text(val, offset*width/16, 120);
   }
 
-  void draw_output() {
+  void draw_output(PGraphics pg) {
     fill(255);
     textSize(32);
     int output_start = output_count - 15;
