@@ -24,6 +24,9 @@
 import java.util.*;
 
 class Tag {
+
+	public static int NUM_CORNERS = 4;
+
 	private int id;
 	private PVector[] cam_corners;
 	private PVector cam_center;
@@ -31,6 +34,8 @@ class Tag {
 	private PVector projector_center;
 
 	Tag(int id, PVector[] cam_corners) {
+		assert(len(cam_corners) == NUM_CORNERS);
+
 		this.id = id;
 		this.cam_corners = cam_corners;
 		this.cam_center = getCenter(cam_corners);
@@ -61,5 +66,25 @@ class Tag {
 		return projector_center;
 	}
 
+	void applyHomography(Homography h) {
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			projector_corners[i] = h.applyHomography(cam_corners[i]);
+		}
+	}
 
+	void drawProjector(PGraphics pg) {
+		tag.getProjectorCorners();
+
+		PVector[] c = projector_corners;
+
+		fill(0, 255, 0);
+		for (int i = 0; i < NUM_CORNERS; i++) {
+				String s = j + " : (" + int(c[j].x) + "," + int(c[j].y) + ")";
+				pg.fill(0);
+				pg.text(s, c[j].x + 2, c[j].y + 2);
+				pg.fill(255, 0, 0);
+				pg.ellipse(c[j].x, c[j].y, 5, 5);
+			}
+		}
+	}
 }
