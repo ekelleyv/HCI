@@ -9,12 +9,37 @@ public class TOYProgram {
     private Hashtable<String, Integer> jumps;
     private boolean isRunning;
     private int eip;
+    private float last_time;
+    private Assembly assembly;
     
-    public TOYProgram() {
+    public TOYProgram(int im_width, int im_height) {
       this.registers = new int[4];
+      this.isRunning = false;
+      this.last_time = System.currentTimeMillis();
+      this.eip = 0;
+      this.assembly = new Assembly(im_width, im_height);
     }
     
-  /*  private static boolean isInteger(String arg) {
+    // called every time in the draw loop
+    public void Update(TagLibrary newCommands, PGraphics pg) {
+        if (!isRunning) {
+           commands = newCommands;
+           eip = 0;
+        }
+        else {
+           // see if execute another step
+           if (last_time - System.currentTimeMillis() > 1000.0) {
+              last_time = System.currentTimeMillis();
+              Step();
+                           
+              // update Assembly
+              assembly.update(pg, registers);
+           } 
+           return;
+        }       
+    }
+    
+    private static boolean isInteger(String arg) {
       try {
         int i = Integer.parseInt(arg);
       }
@@ -198,6 +223,8 @@ public class TOYProgram {
         System.err.println("Command not found: " + command);
       }
     }
+    
+  /*  
     
     private void printRegisters() {
       System.out.println("Register A: " + registers[0]);
