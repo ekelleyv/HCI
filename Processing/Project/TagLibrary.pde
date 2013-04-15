@@ -10,11 +10,21 @@ public class TagLibrary {
 		tags.add(tag);
 	}
 
+	public int numTags() {
+		return tags.size();
+	}
+
 	public List<Tag> getTags() {
 		return tags;
 	}
 
 	public List<List<Tag>> getTagRows() {
 		
+	}
+
+	public void draw(PGraphics pg) {
+		for (Tag tag : tags) {
+			tag.drawProjector(pg);
+		}
 	}
 }
