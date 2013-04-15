@@ -9,7 +9,6 @@ class Detect {
 	String cam_param;
 	String pattern_filepath;
 	String[] patterns;
-	Arraylist<Marker> marker_list;
 
 	Detect (Project project, int cam_width, int cam_height, String cam_param, String pattern_filepath) {
 		this.cam_width = cam_width;
@@ -32,26 +31,34 @@ class Detect {
 		}
 	}
 
-	void detect_tags(PImage cam_image) {
+	TagLibrary detect_tags(PImage cam_image) {
+		TagLibrary tags = new TagLibrary();
 		nya.detect(cam_image);
-		
+
 		for (int i = 0; i < num_markers; i++) {
 			if ((!nya.isExistMarker(i))) { continue; } //Continue if marker does not exist
 
 			PVector[] pos2d = nya.getMarkerVertex2D(i);
 
+			int num_tags = pos2d.length/4;
+
+			for (int j = 0; j < num_tags; j++) {
+				PVector[] corners = new PVector[4];
+			}
+
 			println("POS2D is of length " + pos2d.length);
 		}
+
+		return tags;
 	}
 
 	void draw_tags(TagLibrary tags, PGraphics pg) {
-		Arraylist<Tag> tag_list = tags.getTags();
+		List<Tag> tag_list = tags.getTags();
 
 		for (Tag tag : tag_list) {
-			PVector[] pos2d = tag.getCorners();
+			PVector[] pos2d = tag.getCamCorners();
 
 			fill(0, 255, 0);
-			pg.ellipse(center_x, center_y, 5, 5);
 			for (int j=0; j<pos2d.length; j++) {
 				String s = j + " : (" + int(pos2d[j].x) + "," + int(pos2d[j].y) + ")";
 				pg.fill(0);

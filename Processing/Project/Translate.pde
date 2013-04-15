@@ -2,7 +2,7 @@ import processing.video.*;
 import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 
 class Translate {
-	Homography h = new Homography();
+	private Homography h = new Homography();
 
 	static void translate_init(TagLibrary tl) {
 		PVector[] cam = new PVector[tl.numTags() * 4];
@@ -11,8 +11,8 @@ class Translate {
 		int i = 0;
 		for (Tag tag : tl.getTags()) {
 			for (int j = 0; j < Tag.NUM_CORNERS; j++) {
-				cam[i] = tag.camCorners()[j];
-				proj[i] = tag.projCorners()[j];
+				cam[i] = tag.getCamCorners()[j];
+				proj[i] = tag.getProjectorCorners()[j];
 				i++;
 			}
 		}
