@@ -1,5 +1,3 @@
-// Augmented Reality RGBCube OOP Example by Amnon Owed (21/12/11)
-// Processing 1.5.1 + NyARToolkit 1.1.6 + GSVideo 1.0
 
 import java.io.*; // for the loadPatternFilenames() function
 import processing.opengl.*; // for OPENGL rendering
@@ -26,6 +24,8 @@ PFrame disp_frame = null;
 
 PGraphics proj_buffer;
 PGraphics disp_buffer;
+
+TagLibary tags;
 
 Assembly assembly;
 
@@ -57,6 +57,8 @@ void setup() {
   disp_frame = new PFrame(disp_applet, 210, 0);
   disp_frame.setTitle("Display");
 
+  tags = new TagLibary();
+
   assembly = new Assembly(proj_width, proj_height);
 
 }
@@ -64,13 +66,15 @@ void setup() {
 void draw() {
     //Tag detection and update buffer
     if (cam.available() == true) {
-      disp_buffer.beginDraw();
       cam.read();
-      disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-      ar_detect.run(cam);
-      ar_detect.detect_tags(disp_buffer);
-      disp_buffer.endDraw();
+      tags = ar_detect.detect_tags(cam);
     }
+
+    if (init_on) {
+
+    }
+
+    //get_translation();
     assembly.update();
 }
 
@@ -92,5 +96,9 @@ private class DispApplet extends PApplet {
 
   void draw() {
     image(disp_buffer, 0, 0);
+    disp_buffer.beginDraw();
+    disp_buffer.image(cam, 0, 0, cam_width, cam_height);
+    ar_detect.draw_tags(tags, disp_buffer);
+    disp_buffer.endDraw();
   }
 }

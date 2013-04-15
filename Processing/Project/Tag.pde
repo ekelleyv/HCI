@@ -23,42 +23,43 @@
 
 import java.util.*;
 
-public enum TagType {
-	NONE,
-	BINARY,
-	LITERAL,
-	INSTRUCTION,
-	META
-}
-
 class Tag {
-	int id;
-	TagType type;
-	String val;
+	private int id;
+	private PVector[] cam_corners;
+	private PVector cam_center;
+	private PVector[] projector_corners;
+	private PVector projector_center;
 
-	Tag(int id, double x_center_cam, double y_center_cam) {
+	Tag(int id, PVector[] cam_corners) {
 		this.id = id;
-		this.type = get_type();
-		this.val = get_val();
+		this.cam_corners = cam_corners;
+		this.cam_center = getCenter(cam_corners);
 	}
 
-	get_val() {
-		val = "";
+	private getCenter(PVector[] corners) {
+		PVector center = new PVector(corners[0].x + (corners[3].x - corners[0].x)/2, corners[0].y + (corners[3].y - corners[0].y)/2);
+		return center;
 	}
 
-	get_type() {
-		type = NONE;
-		if (id <=16) {
-			type = BINARY;
-		}
-		else if (id <= 22) {
-			type = INSTRUCTION;
-		}
-		else if (id <= 25) {
-			type = META;
-		}
-		else if (id <= 35) {
-			type = LITERAL;
-		}
+	getId() {
+		return id;
 	}
+
+	getCamCorners() {
+		return cam_corners;
+	}
+
+	getCamCenter() {
+		return cam_center;
+	}
+
+	getProjectorCorners() {
+		return cam_corners;
+	}
+
+	getProjectorCenter() {
+		return cam_center;
+	}
+
+
 }
