@@ -1,5 +1,3 @@
-import processing.video.*;
-import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 import java.util.ArrayList;
 
 public class TagLibrary {
@@ -19,7 +17,7 @@ public class TagLibrary {
 	}
 
 	public List<List<Tag>> getTagRows() {
-		
+		return null;
 	}
 
 	public void draw(PGraphics pg) {

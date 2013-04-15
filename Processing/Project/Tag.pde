@@ -36,29 +36,29 @@ class Tag {
 		this.cam_center = getCenter(cam_corners);
 	}
 
-	private getCenter(PVector[] corners) {
+	private PVector getCenter(PVector[] corners) {
 		PVector center = new PVector(corners[0].x + (corners[3].x - corners[0].x)/2, corners[0].y + (corners[3].y - corners[0].y)/2);
 		return center;
 	}
 
-	getId() {
+	int getId() {
 		return id;
 	}
 
-	getCamCorners() {
+	PVector[] getCamCorners() {
 		return cam_corners;
 	}
 
-	getCamCenter() {
+	PVector getCamCenter() {
 		return cam_center;
 	}
 
-	getProjectorCorners() {
-		return cam_corners;
+	PVector[] getProjectorCorners() {
+		return projector_corners;
 	}
 
-	getProjectorCenter() {
-		return cam_center;
+	PVector getProjectorCenter() {
+		return projector_center;
 	}
 
 

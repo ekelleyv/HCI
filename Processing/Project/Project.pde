@@ -25,7 +25,7 @@ PFrame disp_frame = null;
 PGraphics proj_buffer;
 PGraphics disp_buffer;
 
-TagLibary tags;
+TagLibrary tags;
 
 Assembly assembly;
 
@@ -57,7 +57,7 @@ void setup() {
   disp_frame = new PFrame(disp_applet, 210, 0);
   disp_frame.setTitle("Display");
 
-  tags = new TagLibary();
+  tags = new TagLibrary();
 
   assembly = new Assembly(proj_width, proj_height);
 
