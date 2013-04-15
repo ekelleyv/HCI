@@ -32,31 +32,28 @@ class Detect {
 		}
 	}
 
-	void run (PImage cam_image) {
-
+	void detect_tags(PImage cam_image) {
 		nya.detect(cam_image);
-	}
-
-	void detect_tags(PGraphics pg) {
+		
 		for (int i = 0; i < num_markers; i++) {
 			if ((!nya.isExistMarker(i))) { continue; } //Continue if marker does not exist
 
 			PVector[] pos2d = nya.getMarkerVertex2D(i);
-			// draw each vector both textually and with a red dot
 
 			println("POS2D is of length " + pos2d.length);
+		}
+	}
 
-			//Simple average
-			center_x = pos2d[0].x + (pos2d[4].x - pos2d[0].x)/2;
-			center_y = pos2d[0].y + (pos2d[4].y - pos2d[0].y)/2;
+	void draw_tags(TagLibrary tags, PGraphics pg) {
+		Arraylist<Tag> tag_list = tags.getTags();
+
+		for (Tag tag : tag_list) {
+			PVector[] pos2d = tag.getCorners();
 
 			fill(0, 255, 0);
 			pg.ellipse(center_x, center_y, 5, 5);
-
 			for (int j=0; j<pos2d.length; j++) {
 				String s = j + " : (" + int(pos2d[j].x) + "," + int(pos2d[j].y) + ")";
-				// fill(255);
-				// rect(pos2d[j].x, pos2d[j].y, textWidth(s) + 3, textAscent() + textDescent() + 3);
 				pg.fill(0);
 				pg.text(s, pos2d[j].x + 2, pos2d[j].y + 2);
 				pg.fill(255, 0, 0);
