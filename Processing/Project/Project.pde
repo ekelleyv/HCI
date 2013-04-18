@@ -45,7 +45,7 @@ void setup() {
   //Create camera object
   String[] cameras = Capture.list();
   println(cameras);
-  cam = new Capture(this, cameras[12]); //0 is iSight 12 is USB
+  cam = new Capture(this, cameras[12]); // 0 is iSight 12 is USB
   cam.start();
 
     //Create detect object
@@ -75,7 +75,7 @@ void draw() {
     }
 
     //get_translation();
-    assembly.update();
+    // assembly.update();
 }
 
 
