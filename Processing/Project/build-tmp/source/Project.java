@@ -9,14 +9,24 @@ import codeanticode.gsvideo.*;
 import com.shigeodayo.pframe.*; 
 import processing.video.*; 
 import jp.nyatla.nyar4psg.*; 
+import java.util.*; 
+import processing.core.PApplet; 
+import processing.core.PVector; 
+import Jama.*; 
 import java.util.List; 
 import java.util.ArrayList; 
 import java.util.Hashtable; 
 import java.io.*; 
 import java.util.*; 
-import java.util.ArrayList; 
+import java.util.*; 
+import java.util.*; 
 import processing.video.*; 
 import jp.nyatla.nyar4psg.*; 
+
+import Jama.util.*; 
+import Jama.*; 
+import Jama.test.*; 
+import Jama.examples.*; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -38,16 +48,22 @@ public class Project extends PApplet {
 Detect ar_detect;
 Capture cam;
 Initialize init;
-String camPara = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/data/camera_para.dat";
-String patternPath = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns";
+String camPara;
+String patternPath;
 
+boolean iSight = true;
+int cam_number;
 
-int cam_width = 1280;
-int cam_height = 960;
+int cam_width;
+int cam_height;
 
 int proj_width = 1280;
 int proj_height = 1024;
+
+// Init variables
 boolean init_on = false;
+int init_count = 0;
+int init_length = 30;
 
 DispApplet disp_applet = null;
 PFrame disp_frame = null;
@@ -62,7 +78,21 @@ TagLibrary tags;
 
 
 public void setup() {
+
+  if (iSight) {
+    cam_width = 640;
+    cam_height = 480;
+    cam_number = 0;
+  }
+  else {
+    cam_width = 1280;
+    cam_height = 960;
+    cam_number = 12;
+  }
   //Create display
+  camPara = sketchPath("../libraries/nyar4psg/data/camera_para.dat");
+  patternPath = sketchPath("../libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns");
+
   size(proj_width, proj_height);
   println("Setting up");
   frameRate(30);
@@ -75,10 +105,10 @@ public void setup() {
   //Create camera object
   String[] cameras = Capture.list();
   println(cameras);
-  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
+  cam = new Capture(this, cameras[cam_number]);
   cam.start();
 
-    //Create detect object
+  // Create detect object
   ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
 
 
@@ -101,9 +131,17 @@ public void draw() {
     }
 
     if (init_on) {
-
+      if (init_count < init_length) {
+        init.run();
+        init_count++;
+      }
+      else {
+        init_count = 0;
+        init_on = false;
+      }
     }
     else {
+      background(0);
       // application.update(tags);
     }
 }
@@ -111,7 +149,7 @@ public void draw() {
 
 public void keyPressed() {
   if (key == 'i' || key == 'I') {
-    init_on = !init_on;
+    init_on = true;
   }
 }
 
@@ -127,11 +165,19 @@ private class DispApplet extends PApplet {
   public void draw() {
     disp_buffer.beginDraw();
     disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-    // tags.drawCam(disp_buffer);
     disp_buffer.endDraw();
+
+    // tags.drawCam(disp_buffer);
 
     image(disp_buffer, 0, 0);
   }
+}
+public interface Application {
+	
+	public void init(int w, int h);
+
+	public void update(TagLibrary tl);
+	
 }
 class Assembly {
 
@@ -283,15 +329,15 @@ class Detect {
 
 			int num_tags = pos2d.length/4;
 
-			for (int j = 0; j < num_tags; j++) {
-				PVector[] corners = new PVector[4];
-				for (int k = 0; k < 4; k++) {
-					corners[j].x = pos2d[j + k].x;
-					corners[j].y = pos2d[j + k].y;
-				}
-				Tag tag = new Tag(i, corners);
-				// TagLibrary.add(tag);
-			}
+			// for (int j = 0; j < num_tags; j++) {
+			// 	PVector[] corners = new PVector[4];
+			// 	for (int k = 0; k < 4; k++) {
+			// 		corners[j].x = pos2d[j + k].x;
+			// 		corners[j].y = pos2d[j + k].y;
+			// 	}
+			// 	Tag tag = new Tag(i, corners);
+			// 	tags.addTag(tag);
+			// }
 		}
 		return tags;
 	}
@@ -323,7 +369,7 @@ class Grid {
 	}
 
 	public void setup() {
-		String image_prefix = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/gif/4x4_384_";
+		String image_prefix = sketchPath("../libraries/nyar4psg/patternMaker/examples/gif/4x4_384_");
 		//Load images
 		int num_images = row*col;
 
@@ -343,146 +389,188 @@ class Grid {
 		}
 	}
 }
-// import processing.core.PApplet;
-// import processing.core.PVector;
-// import Jama.*;
 
-// /**
-//  * The Homography class uses a 3x3 matrix to represent the relationship between the
-//  * points in the camera and the points in the projected image.
-//  * @author Anis Zaman, Keith O'Hara
-//  *
-//  */
-// public class Homography {
 
-//         /**
-//          * the 3x3 matrix 
-//          */
-//         private Matrix H = Matrix.identity(3,3);
+public class HashMultimap<K, V> {
+
+	private int i = 0;
+	private HashMap<K, ArrayList<V>> map = new HashMap<K, ArrayList<V>>();
+
+	public boolean containsKey(Object key) { return map.containsKey(key); }
+	public List<V> get(Object key) { return map.get(key); }
+	public int size() { return i; }
+	
+	public void put(K key, V value) {
+		ArrayList<V> list = map.get(key);
+		
+		if (list == null) {
+			list = new ArrayList();
+			map.put(key, list);
+		}
+		
+		list.add(value);
+
+		i++;
+	}
+
+	public Collection<V> values() {
+		ArrayList<V> list = new ArrayList<V>();
+		
+		for (List<V> l : map.values()) {
+			for (V v : l) {
+				list.add(v);
+			}
+		}
+
+		return list;
+	}
+}
+
+
+
+
+/**
+ * The Homography class uses a 3x3 matrix to represent the relationship between the
+ * points in the camera and the points in the projected image.
+ * @author Anis Zaman, Keith O'Hara
+ *
+ */
+public class Homography {
+
+        /**
+         * the 3x3 matrix 
+         */
+        private Matrix H = Matrix.identity(3,3);
         
-//         /**
-//          * whether to display debug messages
-//          */
-//         public boolean debug = false; 
+        /**
+         * whether to display debug messages
+         */
+        public boolean debug = false; 
         
-//         /**
-//          * the parent processing sketch
-//          */
-//         PApplet parent;
+        /**
+         * the parent processing sketch
+         */
+        PApplet parent;
 
-//         public Homography(PApplet p){
-//                 parent= p;
-//         }
+        public Homography() {
+        	this(null);
+        }
+
+        public Homography(PApplet p){
+                parent= p;
+        }
         
-//     /**
-//      * Load the homography from a file
-//      * @param filename the homography file
-//      */
-//         public void loadFile(String filename){
-//                 String lines[] = parent.loadStrings(filename);
-//                 for (int i=0; i<3; i++){
-//                         for (int j=0; j<3; j++){
-//                                 H.set(i,j,(Double.parseDouble(lines[i*3+j]))); 
-//                         }
-//                 }
-//         }
+    /**
+     * Load the homography from a file
+     * @param filename the homography file
+     */
+        public void loadFile(String filename){
+                String lines[] = parent.loadStrings(filename);
+                for (int i=0; i<3; i++){
+                        for (int j=0; j<3; j++){
+                                H.set(i,j,(Double.parseDouble(lines[i*3+j]))); 
+                        }
+                }
+        }
 
-//         /**
-//          * Estimate the homography between the camera and the projected image using an
-//          * array of known correspondences. The four corners of the sketch are good for this.
-//          * 
-//          * @param cam an array of points in camera coordinates
-//          * @param proj an array of points in screen coordinates
-//          */
-//         public void computeHomography(PVector[] cam, PVector[] proj){
-//                 // Creates an array of two times the size of the cam[] array 
-//                 double[][] a = new double[2*cam.length][];
+        /**
+         * Estimate the homography between the camera and the projected image using an
+         * array of known correspondences. The four corners of the sketch are good for this.
+         * 
+         * @param cam an array of points in camera coordinates
+         * @param proj an array of points in screen coordinates
+         */
+        public void computeHomography(PVector[] cam, PVector[] proj){
+                // Creates an array of two times the size of the cam[] array 
+                double[][] a = new double[2*cam.length][];
                 
-//                 // Creates the estimation matrix
-//                 for (int i = 0; i < cam.length; i++){
-//                         double l1 [] = {cam[i].x, cam[i].y, cam[i].z, 0, 0, 0, -cam[i].x*proj[i].x, -cam[i].y*proj[i].x, -proj[i].x};
-//                         double l2 [] = {0, 0, 0, cam[i].x, cam[i].y, cam[i].z, -cam[i].x*proj[i].y, -cam[i].y*proj[i].y, -proj[i].y};
-//                         a[2*i] = l1;
-//                         a[2*i+1] = l2;
-//                 }
-//                 Matrix A = new Matrix(a);
-//                 Matrix T = A.transpose();
-//                 Matrix X = T.times(A);
+                // Creates the estimation matrix
+                for (int i = 0; i < cam.length; i++){
+                        double l1 [] = {cam[i].x, cam[i].y, cam[i].z, 0, 0, 0, -cam[i].x*proj[i].x, -cam[i].y*proj[i].x, -proj[i].x};
+                        double l2 [] = {0, 0, 0, cam[i].x, cam[i].y, cam[i].z, -cam[i].x*proj[i].y, -cam[i].y*proj[i].y, -proj[i].y};
+                        a[2*i] = l1;
+                        a[2*i+1] = l2;
+                }
+                Matrix A = new Matrix(a);
+                Matrix T = A.transpose();
+                Matrix X = T.times(A);
 
-//                 EigenvalueDecomposition E = X.eig();
-//                 // Find the eigenvalues and put that in an array
-//                 double[] eigenvalues = E.getRealEigenvalues();
-//                 // grab the first eigenvalue from the eigenvalues []
-//                 double w = eigenvalues[0];
-//                 int r = 0;
-//                 // Find the minimun eigenvalue
-//                 for (int i= 0; i< eigenvalues.length; i++){
-//                         if (debug) parent.println(eigenvalues[i]);
-//                         if (eigenvalues[i] <= w){
-//                                 w = eigenvalues[i];
-//                                 r = i;
-//                         } 
-//                 }
-//                 // find the corresponding eigenvector
-//                 Matrix v = E.getV();
+                EigenvalueDecomposition E = X.eig();
+                // Find the eigenvalues and put that in an array
+                double[] eigenvalues = E.getRealEigenvalues();
+                // grab the first eigenvalue from the eigenvalues []
+                double w = eigenvalues[0];
+                int r = 0;
+                // Find the minimun eigenvalue
+                for (int i= 0; i< eigenvalues.length; i++){
+                        if (debug) parent.println(eigenvalues[i]);
+                        if (eigenvalues[i] <= w){
+                                w = eigenvalues[i];
+                                r = i;
+                        } 
+                }
+                // find the corresponding eigenvector
+                Matrix v = E.getV();
 
-//                 if (debug) v.print(9,9);
+                if (debug) v.print(9,9);
                 
-//                 // create the homography matrix from the eigenvector v
-//                 for (int i = 0; i < 3; i++){
-//                         for (int j = 0; j < 3; j++){
-//                                 H.set(i, j, v.get(i*3+j, r));
-//                         }
-//                 }
-//         }
+                // create the homography matrix from the eigenvector v
+                for (int i = 0; i < 3; i++){
+                        for (int j = 0; j < 3; j++){
+                                H.set(i, j, v.get(i*3+j, r));
+                        }
+                }
+        }
         
-//         /**
-//          *  write the homography matrix to a file
-//          * @param outputFile homography file
-//          */
-//         public void writeFile(String outputFile){
-//                 String[] lines = new String[9];
-//                 for (int i = 0; i< 3; i++){
-//                         for (int j = 0; j< 3; j++){
-//                                 lines[i*3+j] =  Double.toString(H.get(i,j));
-//                         }
-//                 }
-//                 parent.saveStrings(outputFile, lines);
-//         }
+        /**
+         *  write the homography matrix to a file
+         * @param outputFile homography file
+         */
+        public void writeFile(String outputFile){
+                String[] lines = new String[9];
+                for (int i = 0; i< 3; i++){
+                        for (int j = 0; j< 3; j++){
+                                lines[i*3+j] =  Double.toString(H.get(i,j));
+                        }
+                }
+                parent.saveStrings(outputFile, lines);
+        }
 
-//         /**
-//          * Find the screen coordinates of the LaserPoint p by
-//          * multiplying the camera coordinates by the homography matrix.
-//          * 
-//          * @param p the 
-//          */
-//         public void computeLaserPosition(LaserPoint p){
-//                 PVector q = new PVector(p.cx, p.cy);
-//                 PVector r = applyHomography(q);
-//                 p.px = p.x;
-//                 p.py = p.y;
-//                 p.x = (int)r.x;
-//                 p.y = (int)r.y;
-//         }
+        /**
+         * Find the screen coordinates of the LaserPoint p by
+         * multiplying the camera coordinates by the homography matrix.
+         * 
+         * @param p the 
+         */
+         /*
+        public void computeLaserPosition(LaserPoint p){
+                PVector q = new PVector(p.cx, p.cy);
+                PVector r = applyHomography(q);
+                p.px = p.x;
+                p.py = p.y;
+                p.x = (int)r.x;
+                p.y = (int)r.y;
+        }
+        */
         
-//         /**
-//          * Transform a point p by the homography matrix
-//          * @param p: PVector to be transformed
-//          */
-//         public PVector applyHomography(PVector p){
-//                 double[][] a = new double[3][1];
-//                 a[0][0] = p.x;
-//                 a[1][0] = p.y;
-//                 a[2][0] = 1;
-//                 Matrix D = new Matrix(a);
-//                 Matrix U = H.times(D);
-//                 Matrix L = U.times(1/U.get(2,0));
-//                 PVector p2 = new PVector();
-//                 p2.x = (int)L.get(0, 0);
-//                 p2.y = (int)L.get(1, 0);
-//                 return p2;
-//         }
-// }
+        /**
+         * Transform a point p by the homography matrix
+         * @param p: PVector to be transformed
+         */
+        public PVector applyHomography(PVector p){
+                double[][] a = new double[3][1];
+                a[0][0] = p.x;
+                a[1][0] = p.y;
+                a[2][0] = 1;
+                Matrix D = new Matrix(a);
+                Matrix U = H.times(D);
+                Matrix L = U.times(1/U.get(2,0));
+                PVector p2 = new PVector();
+                p2.x = (int)L.get(0, 0);
+                p2.y = (int)L.get(1, 0);
+                return p2;
+        }
+}
 class Initialize {
 	Grid init_grid;
 
@@ -495,6 +583,32 @@ class Initialize {
 		int init_length = 10000;
 		init_grid.generate_display();
 	}
+}
+public class RootApplication implements Application {
+
+	// private static Map<int, Application> applications = new HashMap();
+
+	private int w, h;
+	private Application a = new RootApplication();
+
+	public void init(int w, int h) {
+		this.w = w;
+		this.h = h;
+
+		// applications.put(0, new TOYProgram());
+	}
+
+	public void update(TagLibrary tl) {
+		Application p = null; /* Choose PROGRAM */
+		
+		if (p != a) {
+			a = p;
+			a.init(w, h);
+		}
+
+		if (a != null) a.update(tl);
+	}
+	
 }
 //Tag ID Values
 // 17 MOV
@@ -770,6 +884,64 @@ public class TOYProgram {
       }
     }
 }
+
+
+public static int NUM_CORNERS = 4;
+
+public class Tag {
+	private int id;
+	private PVector[] cam_corners;
+	private PVector cam_center;
+	private PVector[] projector_corners;
+	private PVector projector_center;
+
+	Tag(int id, PVector[] cam_corners) {
+		assert(cam_corners.length == NUM_CORNERS);
+
+		this.id = id;
+		this.cam_corners = cam_corners;
+		this.cam_center = getCenter(cam_corners);
+	}
+
+	private PVector getCenter(PVector[] corners) {
+		PVector center = new PVector(corners[0].x + (corners[3].x - corners[0].x)/2, corners[0].y + (corners[3].y - corners[0].y)/2);
+		return center;
+	}
+
+	public int getId() { return id; }
+	public PVector[] getCamCorners() { return cam_corners; }
+	public PVector getCamCenter() { return cam_center; }
+	public PVector[] getProjectorCorners() { return projector_corners; }
+	public PVector getProjectorCenter() { return projector_center; }
+
+	public void applyHomography(Homography h) {
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			projector_corners[i] = h.applyHomography(cam_corners[i]);
+		}
+
+		projector_center = getCenter(projector_corners);
+	}
+
+	public void drawCam(PGraphics pg) {
+		drawCorners(pg, cam_corners);
+	}
+
+	public void drawProjector(PGraphics pg) {
+		drawCorners(pg, projector_corners);
+	}
+
+	public void drawCorners(PGraphics pg, PVector[] c) {
+		fill(0, 255, 0);
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			String s = i + " : (" + PApplet.parseInt(c[i].x) + "," + PApplet.parseInt(c[i].y) + ")";
+			pg.fill(0);
+			pg.text(s, c[i].x + 2, c[i].y + 2);
+			pg.fill(255, 0, 0);
+			pg.ellipse(c[i].x, c[i].y, 5, 5);
+		}
+	}
+}
+
 //Tag ID Values
 // 17 MOV
 // 18 PRINT
@@ -794,100 +966,54 @@ public class TOYProgram {
 // 35 9
 
 
-
-class Tag {
-
-	private int id;
-	private PVector[] cam_corners;
-	private PVector cam_center;
-	private PVector[] projector_corners;
-	private PVector projector_center;
-
-	Tag(int id, PVector[] cam_corners) {
-		// assert(len(cam_corners) == NUM_CORNERS);
-
-		this.id = id;
-		this.cam_corners = cam_corners;
-		this.cam_center = getCenter(cam_corners);
-	}
-
-	private PVector getCenter(PVector[] corners) {
-		PVector center = new PVector(corners[0].x + (corners[3].x - corners[0].x)/2, corners[0].y + (corners[3].y - corners[0].y)/2);
-		return center;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public PVector[] getCamCorners() {
-		return cam_corners;
-	}
-
-	public PVector getCamCenter() {
-		return cam_center;
-	}
-
-	public PVector[] getProjectorCorners() {
-		return projector_corners;
-	}
-
-	public PVector getProjectorCenter() {
-		return projector_center;
-	}
-
-	public void applyHomography(Homography h) {
-		for (int i = 0; i < NUM_CORNERS; i++) {
-			projector_corners[i] = h.applyHomography(cam_corners[i]);
-		}
-	}
-
-	public void drawCam(PGraphics pg) {
-		drawCorners(pg, cam_corners);
-	}
-
-	public void drawProjector(PGraphics pg) {
-		drawCorners(pg, projector_corners);
-	}
-
-	public void drawCorners(PGraphics pg, PVector[] c) {
-		fill(0, 255, 0);
-		for (int i = 0; i < NUM_CORNERS; i++) {
-				String s = j + " : (" + PApplet.parseInt(c[j].x) + "," + PApplet.parseInt(c[j].y) + ")";
-				pg.fill(0);
-				pg.text(s, c[j].x + 2, c[j].y + 2);
-				pg.fill(255, 0, 0);
-				pg.ellipse(c[j].x, c[j].y, 5, 5);
-		}
-	}
-
-}
-
-
 public class TagLibrary {
 
-	ArrayList<Tag> tags = new ArrayList<Tag>();
+	ArrayList<Tag> tag_list = new ArrayList<Tag>();
+	// HashMap<int, Tag> tag_map = new HashMap<int, Tag>();
 
 	public void addTag(Tag tag) {
-		tags.add(tag);
+		tag_list.add(tag);
 	}
 
 	public int numTags() {
-		return tags.size();
+		return tag_list.size();
 	}
 
 	public List<Tag> getTags() {
-		return tags;
+		return tag_list;
 	}
 
 	public List<List<Tag>> getTagRows() {
 		return null;
 	}
 
-	public void draw(PGraphics pg) {
-		for (Tag tag : tags) {
+	public void drawProjector(PGraphics pg) {
+		for (Tag tag : tag_list) {
 			tag.drawProjector(pg);
 		}
+	}
+
+	public void drawCam(PGraphics pg) {
+		for (Tag tag : tag_list) {
+			tag.drawCam(pg);
+		}
+	}
+}
+
+
+public class TagRow {
+
+	private ArrayList<Tag> tags = new ArrayList<Tag>();
+
+	/*
+	private class TagComparator implements Comparator {
+		
+	}
+	*/
+
+	public void addTag(Tag tag) {
+		tags.add(tag);
+		// Collections.sort(tags);
 	}
 }
 
@@ -896,13 +1022,13 @@ public class TagLibrary {
 class Translate {
 	private Homography h = new Homography();
 
-	public static void translate_init(TagLibrary tl) {
+	public void translate_init(TagLibrary tl) {
 		PVector[] cam = new PVector[tl.numTags() * 4];
 		PVector[] proj = new PVector[tl.numTags() * 4];
 
 		int i = 0;
 		for (Tag tag : tl.getTags()) {
-			for (int j = 0; j < Tag.NUM_CORNERS; j++) {
+			for (int j = 0; j < NUM_CORNERS; j++) {
 				cam[i] = tag.getCamCorners()[j];
 				proj[i] = tag.getProjectorCorners()[j];
 				i++;
@@ -912,14 +1038,14 @@ class Translate {
 		h.computeHomography(cam, proj);
 	}
 
-	public static void translate_run(TagLibrary tl) {
+	public void translate_run(TagLibrary tl) {
 		for (Tag tag : tl.getTags()) {
 			tag.applyHomography(h);
 		}
 	}
 
-	public static void translate_debug(TagLibrary tl, PGraphics pg) {
-		tl.draw(pg);
+	public void translate_debug(TagLibrary tl, PGraphics pg) {
+		tl.drawCam(pg);
 	}
 }
   static public void main(String[] passedArgs) {

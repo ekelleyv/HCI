@@ -11,9 +11,11 @@ Initialize init;
 String camPara;
 String patternPath;
 
+boolean iSight = true;
+int cam_number;
 
-int cam_width = 1280;
-int cam_height = 960;
+int cam_width;
+int cam_height;
 
 int proj_width = 1280;
 int proj_height = 1024;
@@ -31,11 +33,22 @@ PGraphics disp_buffer;
 
 TagLibrary tags;
 
-Application application = new RootApplication();
+// Application application = new RootApplication();
 
 
 
 void setup() {
+
+  if (iSight) {
+    cam_width = 640;
+    cam_height = 480;
+    cam_number = 0;
+  }
+  else {
+    cam_width = 1280;
+    cam_height = 960;
+    cam_number = 12;
+  }
   //Create display
   camPara = sketchPath("../libraries/nyar4psg/data/camera_para.dat");
   patternPath = sketchPath("../libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns");
@@ -52,10 +65,10 @@ void setup() {
   //Create camera object
   String[] cameras = Capture.list();
   println(cameras);
-  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
+  cam = new Capture(this, cameras[cam_number]);
   cam.start();
 
-    //Create detect object
+  // Create detect object
   ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
 
 
@@ -66,7 +79,7 @@ void setup() {
 
   tags = new TagLibrary();
 
-  application.init(proj_width, proj_height);
+  // application.init(proj_width, proj_height);
 
 }
 
@@ -79,18 +92,24 @@ void draw() {
 
     if (init_on) {
       if (init_count < init_length) {
-        
+        init.run();
+        init_count++;
+      }
+      else {
+        init_count = 0;
+        init_on = false;
       }
     }
     else {
-      application.update(tags);
+      background(0);
+      // application.update(tags);
     }
 }
 
 
 void keyPressed() {
   if (key == 'i' || key == 'I') {
-    init_on = True;
+    init_on = true;
   }
 }
 
@@ -106,8 +125,9 @@ private class DispApplet extends PApplet {
   void draw() {
     disp_buffer.beginDraw();
     disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-    tags.drawCam(disp_buffer);
     disp_buffer.endDraw();
+
+    // tags.drawCam(disp_buffer);
 
     image(disp_buffer, 0, 0);
   }

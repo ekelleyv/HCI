@@ -1,28 +1,35 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class TagLibrary {
 
-	ArrayList<Tag> tags = new ArrayList<Tag>();
+	ArrayList<Tag> tag_list = new ArrayList<Tag>();
+	// HashMap<int, Tag> tag_map = new HashMap<int, Tag>();
 
 	public void addTag(Tag tag) {
-		tags.add(tag);
+		tag_list.add(tag);
 	}
 
 	public int numTags() {
-		return tags.size();
+		return tag_list.size();
 	}
 
 	public List<Tag> getTags() {
-		return tags;
+		return tag_list;
 	}
 
 	public List<List<Tag>> getTagRows() {
 		return null;
 	}
 
-	public void draw(PGraphics pg) {
-		for (Tag tag : tags) {
+	public void drawProjector(PGraphics pg) {
+		for (Tag tag : tag_list) {
 			tag.drawProjector(pg);
+		}
+	}
+
+	public void drawCam(PGraphics pg) {
+		for (Tag tag : tag_list) {
+			tag.drawCam(pg);
 		}
 	}
 }

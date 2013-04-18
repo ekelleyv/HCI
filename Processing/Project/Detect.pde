@@ -42,15 +42,15 @@ class Detect {
 
 			int num_tags = pos2d.length/4;
 
-			for (int j = 0; j < num_tags; j++) {
-				PVector[] corners = new PVector[4];
-				for (int k = 0; k < 4; k++) {
-					corners[j].x = pos2d[j + k].x;
-					corners[j].y = pos2d[j + k].y;
-				}
-				Tag tag = new Tag(i, corners);
-				TagLibrary.add(tag);
-			}
+			// for (int j = 0; j < num_tags; j++) {
+			// 	PVector[] corners = new PVector[4];
+			// 	for (int k = 0; k < 4; k++) {
+			// 		corners[j].x = pos2d[j + k].x;
+			// 		corners[j].y = pos2d[j + k].y;
+			// 	}
+			// 	Tag tag = new Tag(i, corners);
+			// 	tags.addTag(tag);
+			// }
 		}
 		return tags;
 	}
