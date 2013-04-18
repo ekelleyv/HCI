@@ -9,7 +9,7 @@ class Assembly {
   int[] output;
   int output_count;
 
-  Assembly (int im_width, int int_height) {
+  Assembly (int im_width, int im_height) {
     output = new int[10];
     output_count = 0;
     this.im_width = im_width;

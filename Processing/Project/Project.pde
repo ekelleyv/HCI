@@ -27,7 +27,7 @@ PGraphics disp_buffer;
 
 TagLibrary tags;
 
-Assembly assembly;
+Application application = new RootApplication();
 
 
 
@@ -59,7 +59,7 @@ void setup() {
 
   tags = new TagLibrary();
 
-  assembly = new Assembly(proj_width, proj_height);
+  application.init(proj_width, proj_height);
 
 }
 
@@ -73,16 +73,16 @@ void draw() {
     if (init_on) {
 
     }
-
-    //get_translation();
-    assembly.update();
+    else {
+      application.update(tags);
+    }
 }
 
 
-
-
 void keyPressed() {
-  init_on = !init_on;
+  if (key == 'i' || key == 'I') {
+    init_on = !init_on;
+  }
 }
 
 
@@ -95,10 +95,11 @@ private class DispApplet extends PApplet {
   }
 
   void draw() {
-    image(disp_buffer, 0, 0);
     disp_buffer.beginDraw();
     disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-    ar_detect.draw_tags(tags, disp_buffer);
+    tags.drawCam(disp_buffer);
     disp_buffer.endDraw();
+
+    image(disp_buffer, 0, 0);
   }
 }

@@ -72,11 +72,15 @@ class Tag {
 		}
 	}
 
+	void drawCam(PGraphics pg) {
+		drawCorners(pg, cam_corners);
+	}
+
 	void drawProjector(PGraphics pg) {
-		tag.getProjectorCorners();
+		drawCorners(pg, projector_corners);
+	}
 
-		PVector[] c = projector_corners;
-
+	void drawCorners(PGraphics pg, PVector[] c) {
 		fill(0, 255, 0);
 		for (int i = 0; i < NUM_CORNERS; i++) {
 				String s = j + " : (" + int(c[j].x) + "," + int(c[j].y) + ")";
@@ -84,7 +88,7 @@ class Tag {
 				pg.text(s, c[j].x + 2, c[j].y + 2);
 				pg.fill(255, 0, 0);
 				pg.ellipse(c[j].x, c[j].y, 5, 5);
-			}
 		}
 	}
+
 }

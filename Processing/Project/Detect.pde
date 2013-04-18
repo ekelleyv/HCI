@@ -44,29 +44,15 @@ class Detect {
 
 			for (int j = 0; j < num_tags; j++) {
 				PVector[] corners = new PVector[4];
+				for (int k = 0; k < 4; k++) {
+					corners[j].x = pos2d[j + k]
+					corners[j].y = pos2d[j + k]
+				}
+				Tag tag = new Tag(i, corners);
+				TagLibrary.add(tag);
 			}
-
-			println("POS2D is of length " + pos2d.length);
 		}
-
 		return tags;
-	}
-
-	void draw_tags(TagLibrary tags, PGraphics pg) {
-		List<Tag> tag_list = tags.getTags();
-
-		for (Tag tag : tag_list) {
-			PVector[] pos2d = tag.getCamCorners();
-
-			fill(0, 255, 0);
-			for (int j=0; j<pos2d.length; j++) {
-				String s = j + " : (" + int(pos2d[j].x) + "," + int(pos2d[j].y) + ")";
-				pg.fill(0);
-				pg.text(s, pos2d[j].x + 2, pos2d[j].y + 2);
-				pg.fill(255, 0, 0);
-				pg.ellipse(pos2d[j].x, pos2d[j].y, 5, 5);
-			}
-		}
 	}
 
 	// this function loads .patt filenames into a list of Strings based on a full path to a directory (relies on java.io)
