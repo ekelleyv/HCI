@@ -78,7 +78,7 @@ class Assembly {
     draw_val(regA, regs[0]);
     draw_val(regB, regs[1]);
     draw_val(regC, regs[2]);
-    draw_val(regD, regs[3];
+    draw_val(regD, regs[3]);
   }
 
   void draw_val(int val, int num) {
