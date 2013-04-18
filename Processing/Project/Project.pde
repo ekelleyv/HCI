@@ -5,22 +5,22 @@ import codeanticode.gsvideo.*; // the GSVideo library
 import com.shigeodayo.pframe.*;
 
 
-Detect ar_detect;
-Capture cam;
-Initialize init;
 String camPara = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/data/camera_para.dat";
 String patternPath = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns";
-
 
 int cam_width = 1280;
 int cam_height = 960;
 
 int proj_width = 1280;
 int proj_height = 1024;
+
 boolean init_on = false;
 
-DispApplet disp_applet = null;
-PFrame disp_frame = null;
+DispApplet disp_applet;
+PFrame disp_frame;
+Detect ar_detect;
+Capture cam;
+Initialize init;
 
 PGraphics proj_buffer;
 PGraphics disp_buffer;
@@ -33,8 +33,8 @@ Assembly assembly;
 
 void setup() {
   //Create display
-  size(proj_width, proj_height);
   println("Setting up");
+  size(proj_width, proj_height);
   frameRate(30);
   frame.setTitle("Projector");
 
