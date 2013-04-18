@@ -1,3 +1,26 @@
+//Tag ID Values
+// 17 MOV
+// 18 PRINT
+// 19 LABEL
+// 20 JNZ
+// 21 ADD
+// 22 SUB
+
+// 23 RUN
+// 24 BINARY
+// 25 ASSEMBLY
+
+// 26 0
+// 27 1
+// 28 2
+// 29 3
+// 30 4
+// 31 5
+// 32 6
+// 33 7
+// 34 8
+// 35 9
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -5,16 +28,66 @@ import java.io.*;
 
 public class TOYProgram {
     private int[] registers;
-    private TagLibrary commands;
+    private List<List<Tag>> commands;
     private Hashtable<String, Integer> jumps;
     private boolean isRunning;
     private int eip;
-    
-    public TOYProgram() {
-      this.registers = new int[4];
+    private float last_time;
+    private Assembly assembly;
+
+    private String MapId(int id) {
+       if (id == 17)
+         return "MOV";
+       else if (id == 18)
+         return "PRINT";
+       else if (id == 19)
+         return "LABEL";
+       else if (id == 20)
+         return "JNZ";
+       else if (id == 21)
+         return "ADD";
+       else if (id == 22)
+         return "SUB";
+       else if (id == 23)
+         return "RUN";
+       else if (id == 24)
+         return "BINARY";
+       else if (id == 25)
+         return "ASSEMBLY";
+       else {
+         Integer ret = id - 26;
+         return ret.toString();
+       }  
     }
     
-  /*  private static boolean isInteger(String arg) {
+    public TOYProgram(int im_width, int im_height) {
+      this.registers = new int[4];
+      this.isRunning = false;
+      this.last_time = System.currentTimeMillis();
+      this.eip = 0;
+      this.assembly = new Assembly(im_width, im_height);
+    }
+    
+    // called every time in the draw loop
+    public void Update(TagLibrary newCommands, PGraphics pg) {
+        if (!isRunning) {
+           commands = newCommands.getTagRows();
+           eip = 0;
+        }
+        else {
+           // see if execute another step
+           if (last_time - System.currentTimeMillis() > 1000.0) {
+              last_time = System.currentTimeMillis();
+              Step();
+                           
+              // update Assembly
+              assembly.update(pg, registers);
+           } 
+           return;
+        }       
+    }
+    
+    private boolean isInteger(String arg) {
       try {
         int i = Integer.parseInt(arg);
       }
@@ -157,91 +230,45 @@ public class TOYProgram {
     
     public void Step() {
       List<Tag> line = commands.get(eip);
-      String command = line.get(0).Label();
+      String command = MapId(line.get(0).id);
       if (command.equals("MOV")) {
         if (line.size() != 3)
           System.err.println("Error with number of arguments on line: " + eip);
         else
-          movCommand(line.get(1).Label(), line.get(2).Label());
+          movCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("PRINT")) {
         if (line.size() != 2)
           System.err.println("Error with number of arguments on line: " + eip);
         else
-          printCommand(line.get(1).Label());
+          printCommand(MapId(line.get(1).id));
       }
       else if (command.equals("ADD")) {
         if (line.size() != 3)
           System.err.println("Error with number of arguments on line: " + eip);
         else
-          addCommand(line.get(1).Label(), line.get(2).Label());
+          addCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("SUB")) {
         if (line.size() != 3)
           System.err.println("Error with number of arguments on line: " + eip);
         else
-          subCommand(line.get(1).Label(), line.get(2).Label());
+          subCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("JNZ")) {
         if (line.size() != 3)
           System.err.println("Error with number of arguments on line: " + eip);
         else
-          jnzCommand(line.get(1).Label(), line.get(2).Label());
+          jnzCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("LABEL")) {
         if (line.size() != 2)
           System.err.println("Error with number of arguments on line: " + eip);
         else
-          labelCommand(line.get(1).Label());
+          labelCommand(MapId(line.get(1).id));
       }
       else {
         System.err.println("Command not found: " + command);
       }
     }
-    
-    private void printRegisters() {
-      System.out.println("Register A: " + registers[0]);
-      System.out.println("Register B: " + registers[1]);
-      System.out.println("Register C: " + registers[2]);
-      System.out.println("Register D: " + registers[3]);
-      System.out.println(" ");
-    }
-    
-    public void executeCommands() {
-      while (eip != commands.size()) {
-        Step();
-        printRegisters();
-      }
-    }    
-    
-    public static void main(String[] args) {
-      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-      String input;
-      List<List<Tag>> commands = new ArrayList<List<Tag>>();
-      Hashtable<String, Integer> jumps = new Hashtable<String, Integer>();
-      try {
-        int lineNumber = 0;
-        while ((input = in.readLine()) != null && !input.equals("RUN")) {
-          if (!input.startsWith("#")) {
-            String[] arguments = input.split(" ");
-            List<Tag> line = new ArrayList<Tag>();
-            for (int i = 0; i < arguments.length; i++) {
-              Tag tag = new Tag(arguments[i]);
-              line.add(tag);
-            }
-            
-            commands.add(line);
-            
-            lineNumber++;
-          }
-        }
-      }
-      catch (Exception e) {
-        System.err.println("Error reading from standard in");
-        return;
-      }
-      
-      TOYProgram toy = new TOYProgram(commands, jumps);
-      toy.executeCommands();
-    }*/
 }
