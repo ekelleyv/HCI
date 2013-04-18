@@ -25,8 +25,6 @@ import java.util.*;
 
 class Tag {
 
-	public static int NUM_CORNERS = 4;
-
 	private int id;
 	private PVector[] cam_corners;
 	private PVector cam_center;
@@ -34,7 +32,7 @@ class Tag {
 	private PVector projector_center;
 
 	Tag(int id, PVector[] cam_corners) {
-		assert(len(cam_corners) == NUM_CORNERS);
+		// assert(len(cam_corners) == NUM_CORNERS);
 
 		this.id = id;
 		this.cam_corners = cam_corners;

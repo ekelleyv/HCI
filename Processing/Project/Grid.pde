@@ -14,7 +14,7 @@ class Grid {
 	}
 
 	void setup() {
-		String image_prefix = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/gif/4x4_384_";
+		String image_prefix = sketchPath("../libraries/nyar4psg/patternMaker/examples/gif/4x4_384_");
 		//Load images
 		int num_images = row*col;
 

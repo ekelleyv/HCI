@@ -9,6 +9,10 @@ import codeanticode.gsvideo.*;
 import com.shigeodayo.pframe.*; 
 import processing.video.*; 
 import jp.nyatla.nyar4psg.*; 
+import java.util.List; 
+import java.util.ArrayList; 
+import java.util.Hashtable; 
+import java.io.*; 
 import java.util.*; 
 import java.util.ArrayList; 
 import processing.video.*; 
@@ -53,7 +57,7 @@ PGraphics disp_buffer;
 
 TagLibrary tags;
 
-Assembly assembly;
+// Application application = new RootApplication();
 
 
 
@@ -71,7 +75,7 @@ public void setup() {
   //Create camera object
   String[] cameras = Capture.list();
   println(cameras);
-  cam = new Capture(this, cameras[12]); //0 is iSight 12 is USB
+  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
   cam.start();
 
     //Create detect object
@@ -85,7 +89,7 @@ public void setup() {
 
   tags = new TagLibrary();
 
-  assembly = new Assembly(proj_width, proj_height);
+  // application.init(proj_width, proj_height);
 
 }
 
@@ -99,16 +103,16 @@ public void draw() {
     if (init_on) {
 
     }
-
-    //get_translation();
-    assembly.update();
+    else {
+      // application.update(tags);
+    }
 }
 
 
-
-
 public void keyPressed() {
-  init_on = !init_on;
+  if (key == 'i' || key == 'I') {
+    init_on = !init_on;
+  }
 }
 
 
@@ -121,11 +125,12 @@ private class DispApplet extends PApplet {
   }
 
   public void draw() {
-    image(disp_buffer, 0, 0);
     disp_buffer.beginDraw();
     disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-    ar_detect.draw_tags(tags, disp_buffer);
+    // tags.drawCam(disp_buffer);
     disp_buffer.endDraw();
+
+    image(disp_buffer, 0, 0);
   }
 }
 class Assembly {
@@ -139,7 +144,7 @@ class Assembly {
   int[] output;
   int output_count;
 
-  Assembly (int im_width, int int_height) {
+  Assembly (int im_width, int im_height) {
     output = new int[10];
     output_count = 0;
     this.im_width = im_width;
@@ -150,10 +155,11 @@ class Assembly {
     regD = 0;
   }
 
-  public void update() {
-    draw_grid();
-    update_reg_vals();
-    draw_output();
+  public void update(PGraphics pg, int[] regs) {
+    pg.beginDraw();
+    draw_grid(pg);
+    update_reg_vals(pg, regs);
+    draw_output(pg);
   }
 
   public void add_output(int val) {
@@ -163,7 +169,7 @@ class Assembly {
     output[output_count++] = val;
   }
 
-  public void draw_grid() {
+  public void draw_grid(PGraphics pg) {
     background(0);
     noFill();
 
@@ -203,11 +209,11 @@ class Assembly {
     text("D", 15*width/16, 40);
   }
 
-  public void update_reg_vals() {
-    draw_val(regA, 0);
-    draw_val(regB, 1);
-    draw_val(regC, 2);
-    draw_val(regD, 3);
+  public void update_reg_vals(PGraphics pg, int[] regs) {
+    draw_val(regA, regs[0]);
+    draw_val(regB, regs[1]);
+    draw_val(regC, regs[2]);
+    draw_val(regD, regs[3]);
   }
 
   public void draw_val(int val, int num) {
@@ -220,7 +226,7 @@ class Assembly {
     text(val, offset*width/16, 120);
   }
 
-  public void draw_output() {
+  public void draw_output(PGraphics pg) {
     fill(255);
     textSize(32);
     int output_start = output_count - 15;
@@ -279,29 +285,15 @@ class Detect {
 
 			for (int j = 0; j < num_tags; j++) {
 				PVector[] corners = new PVector[4];
+				for (int k = 0; k < 4; k++) {
+					corners[j].x = pos2d[j + k].x;
+					corners[j].y = pos2d[j + k].y;
+				}
+				Tag tag = new Tag(i, corners);
+				// TagLibrary.add(tag);
 			}
-
-			println("POS2D is of length " + pos2d.length);
 		}
-
 		return tags;
-	}
-
-	public void draw_tags(TagLibrary tags, PGraphics pg) {
-		List<Tag> tag_list = tags.getTags();
-
-		for (Tag tag : tag_list) {
-			PVector[] pos2d = tag.getCamCorners();
-
-			fill(0, 255, 0);
-			for (int j=0; j<pos2d.length; j++) {
-				String s = j + " : (" + PApplet.parseInt(pos2d[j].x) + "," + PApplet.parseInt(pos2d[j].y) + ")";
-				pg.fill(0);
-				pg.text(s, pos2d[j].x + 2, pos2d[j].y + 2);
-				pg.fill(255, 0, 0);
-				pg.ellipse(pos2d[j].x, pos2d[j].y, 5, 5);
-			}
-		}
 	}
 
 	// this function loads .patt filenames into a list of Strings based on a full path to a directory (relies on java.io)
@@ -490,7 +482,6 @@ class Grid {
 //                 p2.y = (int)L.get(1, 0);
 //                 return p2;
 //         }
-        
 // }
 class Initialize {
 	Grid init_grid;
@@ -530,7 +521,282 @@ class Initialize {
 
 
 
+
+
+
+public class TOYProgram {
+    private int[] registers;
+    private List<List<Tag>> commands;
+    private Hashtable<String, Integer> jumps;
+    private boolean isRunning;
+    private int eip;
+    private float last_time;
+    private Assembly assembly;
+
+    private String MapId(int id) {
+       if (id == 17)
+         return "MOV";
+       else if (id == 18)
+         return "PRINT";
+       else if (id == 19)
+         return "LABEL";
+       else if (id == 20)
+         return "JNZ";
+       else if (id == 21)
+         return "ADD";
+       else if (id == 22)
+         return "SUB";
+       else if (id == 23)
+         return "RUN";
+       else if (id == 24)
+         return "BINARY";
+       else if (id == 25)
+         return "ASSEMBLY";
+       else {
+         Integer ret = id - 26;
+         return ret.toString();
+       }  
+    }
+    
+    public TOYProgram(int im_width, int im_height) {
+      this.registers = new int[4];
+      this.isRunning = false;
+      this.last_time = System.currentTimeMillis();
+      this.eip = 0;
+      this.assembly = new Assembly(im_width, im_height);
+    }
+    
+    // called every time in the draw loop
+    public void Update(TagLibrary newCommands, PGraphics pg) {
+        if (!isRunning) {
+           commands = newCommands.getTagRows();
+           eip = 0;
+        }
+        else {
+           // see if execute another step
+           if (last_time - System.currentTimeMillis() > 1000.0f) {
+              last_time = System.currentTimeMillis();
+              Step();
+                           
+              // update Assembly
+              assembly.update(pg, registers);
+           } 
+           return;
+        }       
+    }
+    
+    private boolean isInteger(String arg) {
+      try {
+        int i = Integer.parseInt(arg);
+      }
+      catch (NumberFormatException e) {
+        return false;
+      }
+      return true;
+    }
+    
+    private void movCommand(String arg1, String arg2) {
+      int movNumber = 0;
+      if (isInteger(arg1)) {
+        movNumber = Integer.parseInt(arg1);
+      } else if (arg1.equals("A")) {
+        movNumber = registers[0];
+      } else if (arg1.equals("B")) {
+        movNumber = registers[1];
+      } else if (arg1.equals("C")) {
+        movNumber = registers[2];
+      } else if (arg1.equals("D")) {
+        movNumber = registers[3];
+      } else {
+        System.err.println("Error with second tag on line: " + eip);
+      }
+      if (arg2.equals("A")) {
+        registers[0] = movNumber;
+      } else if (arg2.equals("B")) {
+        registers[1] = movNumber;
+      } else if (arg2.equals("C")) {
+        registers[2] = movNumber;
+      } else if (arg2.equals("D")) {
+        registers[3] = movNumber;
+      } else {
+        System.err.println("Error with third tag on line: " + eip);
+      }
+      eip++;
+    }
+    
+    private void printCommand(String arg1) {
+      if (arg1.equals("A")) {
+        System.out.println("A: " + registers[0]);
+      } else if (arg1.equals("B")) {
+        System.out.println("B: " + registers[1]);
+      } else if (arg1.equals("C")) {
+        System.out.println("C: " + registers[2]);
+      } else if (arg1.equals("D")) {
+        System.out.println("D: " + registers[3]);
+      } else {
+        System.err.println("Error with second tag on line: " + eip);
+      }
+      eip++;
+    }
+    
+    private void addCommand(String arg1, String arg2) {
+      int addNumber = 0;
+      if (isInteger(arg1)) {
+        addNumber = Integer.parseInt(arg1);
+      } else if (arg1.equals("A")) {
+        addNumber = registers[0];
+      } else if (arg1.equals("B")) {
+        addNumber = registers[1];
+      } else if (arg1.equals("C")) {
+        addNumber = registers[2];
+      } else if (arg1.equals("D")) {
+        addNumber = registers[3];
+      } else {
+        System.err.println("Error with second tag on line: " + eip);
+      }
+      if (arg2.equals("A")) {
+        registers[0] += addNumber;
+      } else if (arg2.equals("B")) {
+        registers[1] += addNumber;
+      } else if (arg2.equals("C")) {
+        registers[2] += addNumber;
+      } else if (arg2.equals("D")) {
+        registers[3] += addNumber;
+      } else {
+        System.err.println("Error with third tag on line: " + eip);
+      }
+      eip++;
+    }
+    
+    private void subCommand(String arg1, String arg2) {
+      int subNumber = 0;
+      if (isInteger(arg1)) {
+        subNumber = Integer.parseInt(arg1);
+      } else if (arg1.equals("A")) {
+        subNumber = registers[0];
+      } else if (arg1.equals("B")) {
+        subNumber = registers[1];
+      } else if (arg1.equals("C")) {
+        subNumber = registers[2];
+      } else if (arg1.equals("D")) {
+        subNumber = registers[3];
+      } else {
+        System.err.println("Error with second tag on line: " + eip);
+      }
+      if (arg2.equals("A")) {
+        registers[0] -= subNumber;
+      } else if (arg2.equals("B")) {
+        registers[1] -= subNumber;
+      } else if (arg2.equals("C")) {
+        registers[2] -= subNumber;
+      } else if (arg2.equals("D")) {
+        registers[3] -= subNumber;
+      } else {
+        System.err.println("Error with third tag on line: " + eip);
+      }
+      eip++;
+    }
+    
+    private void jnzCommand(String arg1, String arg2) {
+      int registerValue = 0;
+      if (arg1.equals("A"))
+        registerValue = registers[0];
+      else if (arg1.equals("B"))
+        registerValue = registers[1];
+      else if (arg1.equals("C"))
+        registerValue = registers[2];
+      else if (arg1.equals("D"))
+        registerValue = registers[3];
+      else 
+        System.err.println("Error with  second tag on line: " + eip);
+      if (registerValue != 0) {
+        Integer new_eip = jumps.get(arg2);
+        if (new_eip == null) {
+          System.err.println("Label not recognized");
+        }
+        eip = new_eip + 1;
+      }
+      else {
+        eip++;
+      }
+    }
+    
+    private void labelCommand(String arg1) {
+      jumps.put(arg1, eip);
+      eip++;
+    }
+    
+    public void Step() {
+      List<Tag> line = commands.get(eip);
+      String command = MapId(line.get(0).id);
+      if (command.equals("MOV")) {
+        if (line.size() != 3)
+          System.err.println("Error with number of arguments on line: " + eip);
+        else
+          movCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+      }
+      else if (command.equals("PRINT")) {
+        if (line.size() != 2)
+          System.err.println("Error with number of arguments on line: " + eip);
+        else
+          printCommand(MapId(line.get(1).id));
+      }
+      else if (command.equals("ADD")) {
+        if (line.size() != 3)
+          System.err.println("Error with number of arguments on line: " + eip);
+        else
+          addCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+      }
+      else if (command.equals("SUB")) {
+        if (line.size() != 3)
+          System.err.println("Error with number of arguments on line: " + eip);
+        else
+          subCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+      }
+      else if (command.equals("JNZ")) {
+        if (line.size() != 3)
+          System.err.println("Error with number of arguments on line: " + eip);
+        else
+          jnzCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+      }
+      else if (command.equals("LABEL")) {
+        if (line.size() != 2)
+          System.err.println("Error with number of arguments on line: " + eip);
+        else
+          labelCommand(MapId(line.get(1).id));
+      }
+      else {
+        System.err.println("Command not found: " + command);
+      }
+    }
+}
+//Tag ID Values
+// 17 MOV
+// 18 PRINT
+// 19 LABEL
+// 20 JNZ
+// 21 ADD
+// 22 SUB
+
+// 23 RUN
+// 24 BINARY
+// 25 ASSEMBLY
+
+// 26 0
+// 27 1
+// 28 2
+// 29 3
+// 30 4
+// 31 5
+// 32 6
+// 33 7
+// 34 8
+// 35 9
+
+
+
 class Tag {
+
 	private int id;
 	private PVector[] cam_corners;
 	private PVector cam_center;
@@ -538,6 +804,8 @@ class Tag {
 	private PVector projector_center;
 
 	Tag(int id, PVector[] cam_corners) {
+		// assert(len(cam_corners) == NUM_CORNERS);
+
 		this.id = id;
 		this.cam_corners = cam_corners;
 		this.cam_center = getCenter(cam_corners);
@@ -568,6 +836,30 @@ class Tag {
 		return projector_center;
 	}
 
+	public void applyHomography(Homography h) {
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			projector_corners[i] = h.applyHomography(cam_corners[i]);
+		}
+	}
+
+	public void drawCam(PGraphics pg) {
+		drawCorners(pg, cam_corners);
+	}
+
+	public void drawProjector(PGraphics pg) {
+		drawCorners(pg, projector_corners);
+	}
+
+	public void drawCorners(PGraphics pg, PVector[] c) {
+		fill(0, 255, 0);
+		for (int i = 0; i < NUM_CORNERS; i++) {
+				String s = j + " : (" + PApplet.parseInt(c[j].x) + "," + PApplet.parseInt(c[j].y) + ")";
+				pg.fill(0);
+				pg.text(s, c[j].x + 2, c[j].y + 2);
+				pg.fill(255, 0, 0);
+				pg.ellipse(c[j].x, c[j].y, 5, 5);
+		}
+	}
 
 }
 
@@ -602,7 +894,7 @@ public class TagLibrary {
  // the NyARToolkit Processing library
 
 class Translate {
-	Homography h = new Homography();
+	private Homography h = new Homography();
 
 	public static void translate_init(TagLibrary tl) {
 		PVector[] cam = new PVector[tl.numTags() * 4];
@@ -611,8 +903,8 @@ class Translate {
 		int i = 0;
 		for (Tag tag : tl.getTags()) {
 			for (int j = 0; j < Tag.NUM_CORNERS; j++) {
-				cam[i] = tag.camCorners()[j];
-				proj[i] = tag.projCorners()[j];
+				cam[i] = tag.getCamCorners()[j];
+				proj[i] = tag.getProjectorCorners()[j];
 				i++;
 			}
 		}

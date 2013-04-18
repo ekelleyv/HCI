@@ -8,8 +8,8 @@ import com.shigeodayo.pframe.*;
 Detect ar_detect;
 Capture cam;
 Initialize init;
-String camPara = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/data/camera_para.dat";
-String patternPath = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns";
+String camPara;
+String patternPath;
 
 
 int cam_width = 1280;
@@ -17,7 +17,11 @@ int cam_height = 960;
 
 int proj_width = 1280;
 int proj_height = 1024;
+
+// Init variables
 boolean init_on = false;
+int init_count = 0;
+int init_length = 30;
 
 DispApplet disp_applet = null;
 PFrame disp_frame = null;
@@ -33,6 +37,9 @@ Application application = new RootApplication();
 
 void setup() {
   //Create display
+  camPara = sketchPath("../libraries/nyar4psg/data/camera_para.dat");
+  patternPath = sketchPath("../libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns");
+
   size(proj_width, proj_height);
   println("Setting up");
   frameRate(30);
@@ -45,7 +52,7 @@ void setup() {
   //Create camera object
   String[] cameras = Capture.list();
   println(cameras);
-  cam = new Capture(this, cameras[12]); //0 is iSight 12 is USB
+  cam = new Capture(this, cameras[0]); //0 is iSight 12 is USB
   cam.start();
 
     //Create detect object
@@ -71,7 +78,9 @@ void draw() {
     }
 
     if (init_on) {
-
+      if (init_count < init_length) {
+        
+      }
     }
     else {
       application.update(tags);
@@ -81,7 +90,7 @@ void draw() {
 
 void keyPressed() {
   if (key == 'i' || key == 'I') {
-    init_on = !init_on;
+    init_on = True;
   }
 }
 
