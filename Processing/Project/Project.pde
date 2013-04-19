@@ -26,13 +26,8 @@ boolean init_on = false;
 int init_count = 0;
 int init_length = 30;
 
-boolean init_on = false;
-
 DispApplet disp_applet;
 PFrame disp_frame;
-Detect ar_detect;
-Capture cam;
-Initialize init;
 PGraphics proj_buffer;
 PGraphics disp_buffer;
 TagLibrary tags;
