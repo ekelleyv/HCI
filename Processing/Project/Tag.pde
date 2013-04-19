@@ -58,9 +58,15 @@ public class Tag {
 		projector_center = getCenter(projector_corners);
 	}
 
-	void drawProjector(PGraphics pg) {
-		PVector[] c = projector_corners;
+	void drawCam(PGraphics pg) {
+		drawCorners(pg, cam_corners);
+	}
 
+	void drawProjector(PGraphics pg) {
+		drawCorners(pg, projector_corners);
+	}
+
+	void drawCorners(PGraphics pg, PVector[] c) {
 		fill(0, 255, 0);
 		for (int i = 0; i < NUM_CORNERS; i++) {
 			String s = i + " : (" + int(c[i].x) + "," + int(c[i].y) + ")";

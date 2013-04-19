@@ -38,9 +38,15 @@ public class TagLibrary {
 		return tag_rows;
 	}
 
-	public void draw(PGraphics pg) {
+	public void drawProjector(PGraphics pg) {
 		for (Tag tag : tag_list) {
 			tag.drawProjector(pg);
+		}
+	}
+
+	public void drawCam(PGraphics pg) {
+		for (Tag tag : tag_list) {
+			tag.drawCam(pg);
 		}
 	}
 }

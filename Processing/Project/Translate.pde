@@ -27,6 +27,6 @@ class Translate {
 	}
 
 	public void translate_debug(TagLibrary tl, PGraphics pg) {
-		tl.draw(pg);
+		tl.drawCam(pg);
 	}
 }
