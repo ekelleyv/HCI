@@ -4,10 +4,17 @@ public static int NUM_CORNERS = 4;
 
 public class Tag {
 	private int id;
+
 	private PVector[] cam_corners;
 	private PVector cam_center;
+
 	private PVector[] projector_corners;
 	private PVector projector_center;
+
+	private double maxX = Double.NEGATIVE_INFINITY;
+	private double maxY = Double.NEGATIVE_INFINITY;
+	private double minX = Double.POSITIVE_INFINITY;
+	private double minY = Double.POSITIVE_INFINITY;
 
 	Tag(int id, PVector[] cam_corners) {
 		assert(cam_corners.length == NUM_CORNERS);
@@ -28,9 +35,24 @@ public class Tag {
 	public PVector[] getProjectorCorners() { return projector_corners; }
 	public PVector getProjectorCenter() { return projector_center; }
 
+	public double getMaxX() { return maxX; }
+	public double getMaxY() { return maxY; }
+	public double getMinX() { return minX; }
+	public double getMinY() { return minY; }
+
 	void applyHomography(Homography h) {
+		maxX = maxY = Double.POSITIVE_INFINITY;
+		minX = minY = Double.NEGATIVE_INFINITY;
+
 		for (int i = 0; i < NUM_CORNERS; i++) {
-			projector_corners[i] = h.applyHomography(cam_corners[i]);
+			PVector v = h.applyHomography(cam_corners[i]);
+			
+			if (v.x > maxX) maxX = v.x;
+			if (v.y > maxY) maxY = v.y;
+			if (v.x < minX) minX = v.x;
+			if (v.y < minY) minY = v.y;
+
+			projector_corners[i] = v;
 		}
 
 		projector_center = getCenter(projector_corners);

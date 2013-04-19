@@ -28,7 +28,7 @@ import java.io.*;
 
 public class TOYProgram {
     private int[] registers;
-    private List<List<Tag>> commands;
+    private List<TagRow> commands;
     private Hashtable<String, Integer> jumps;
     private boolean isRunning;
     private int eip;
@@ -229,7 +229,7 @@ public class TOYProgram {
     }
     
     public void Step() {
-      List<Tag> line = commands.get(eip);
+      TagRow line = commands.get(eip);
       String command = MapId(line.get(0).id);
       if (command.equals("MOV")) {
         if (line.size() != 3)

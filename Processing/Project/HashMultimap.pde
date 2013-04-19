@@ -2,12 +2,11 @@ import java.util.*;
 
 public class HashMultimap<K, V> {
 
-	private int i = 0;
 	private HashMap<K, ArrayList<V>> map = new HashMap<K, ArrayList<V>>();
 
+	public void clear() { map.clear(); }
 	public boolean containsKey(Object key) { return map.containsKey(key); }
 	public List<V> get(Object key) { return map.get(key); }
-	public int size() { return i; }
 	
 	public void put(K key, V value) {
 		ArrayList<V> list = map.get(key);
@@ -18,8 +17,6 @@ public class HashMultimap<K, V> {
 		}
 		
 		list.add(value);
-
-		i++;
 	}
 
 	public Collection<V> values() {

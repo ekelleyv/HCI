@@ -42,7 +42,7 @@ public class Project extends PApplet {
  // for the loadPatternFilenames() function
  // for OPENGL rendering
  // the GSVideo library
- // the PFram library
+ // the PFrame library
 
 String camPara = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/data/camera_para.dat";
 String patternPath = "/Users/ekelley/Google Drive/Projects/HCI/Processing/libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns";
@@ -89,21 +89,16 @@ public void setup() {
   cam = new Capture(this, cameras[12]); // 0 is iSight 12 is USB
   cam.start();
 
-  //Create detect object
+  // Create required objects
   ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
-
-
-  //Create init object
   init = new Initialize();
-
   tags = new TagLibrary();
-
   assembly = new Assembly(proj_width, proj_height);
 
 }
 
 public void draw() {
-    //Tag detection and update buffer
+    // Tag detection and update buffer
     if (cam.available() == true) {
       cam.read();
       tags = ar_detect.detect_tags(cam);
@@ -114,11 +109,8 @@ public void draw() {
     }
 
     //get_translation();
-    // assembly.update();
+    //assembly.update();
 }
-
-
-
 
 public void keyPressed() {
   init_on = !init_on;
@@ -376,12 +368,11 @@ class Grid {
 
 public class HashMultimap<K, V> {
 
-	private int i = 0;
 	private HashMap<K, ArrayList<V>> map = new HashMap<K, ArrayList<V>>();
 
+	public void clear() { map.clear(); }
 	public boolean containsKey(Object key) { return map.containsKey(key); }
 	public List<V> get(Object key) { return map.get(key); }
-	public int size() { return i; }
 	
 	public void put(K key, V value) {
 		ArrayList<V> list = map.get(key);
@@ -392,8 +383,6 @@ public class HashMultimap<K, V> {
 		}
 		
 		list.add(value);
-
-		i++;
 	}
 
 	public Collection<V> values() {
@@ -623,7 +612,7 @@ public class RootApplication implements Application {
 
 public class TOYProgram {
     private int[] registers;
-    private List<List<Tag>> commands;
+    private List<TagRow> commands;
     private Hashtable<String, Integer> jumps;
     private boolean isRunning;
     private int eip;
@@ -824,7 +813,7 @@ public class TOYProgram {
     }
     
     public void Step() {
-      List<Tag> line = commands.get(eip);
+      TagRow line = commands.get(eip);
       String command = MapId(line.get(0).id);
       if (command.equals("MOV")) {
         if (line.size() != 3)
@@ -873,10 +862,17 @@ public static int NUM_CORNERS = 4;
 
 public class Tag {
 	private int id;
+
 	private PVector[] cam_corners;
 	private PVector cam_center;
+
 	private PVector[] projector_corners;
 	private PVector projector_center;
+
+	private double maxX = Double.NEGATIVE_INFINITY;
+	private double maxY = Double.NEGATIVE_INFINITY;
+	private double minX = Double.POSITIVE_INFINITY;
+	private double minY = Double.POSITIVE_INFINITY;
 
 	Tag(int id, PVector[] cam_corners) {
 		assert(cam_corners.length == NUM_CORNERS);
@@ -897,9 +893,24 @@ public class Tag {
 	public PVector[] getProjectorCorners() { return projector_corners; }
 	public PVector getProjectorCenter() { return projector_center; }
 
+	public double getMaxX() { return maxX; }
+	public double getMaxY() { return maxY; }
+	public double getMinX() { return minX; }
+	public double getMinY() { return minY; }
+
 	public void applyHomography(Homography h) {
+		maxX = maxY = Double.POSITIVE_INFINITY;
+		minX = minY = Double.NEGATIVE_INFINITY;
+
 		for (int i = 0; i < NUM_CORNERS; i++) {
-			projector_corners[i] = h.applyHomography(cam_corners[i]);
+			PVector v = h.applyHomography(cam_corners[i]);
+			
+			if (v.x > maxX) maxX = v.x;
+			if (v.y > maxY) maxY = v.y;
+			if (v.x < minX) minX = v.x;
+			if (v.y < minY) minY = v.y;
+
+			projector_corners[i] = v;
 		}
 
 		projector_center = getCenter(projector_corners);
@@ -946,22 +957,39 @@ public class Tag {
 public class TagLibrary {
 
 	ArrayList<Tag> tag_list = new ArrayList<Tag>();
-	// HashMap<int, Tag> tag_map = new HashMap<int, Tag>();
+	HashMultimap<Integer, Tag> tag_map = new HashMultimap<Integer, Tag>();
+	ArrayList<TagRow> tag_rows = new ArrayList<TagRow>();
 
 	public void addTag(Tag tag) {
 		tag_list.add(tag);
+		tag_map.put(tag.getId(), tag);
+
+		for (TagRow row : tag_rows) {
+			if (row.doesContain(tag)) {
+				row.add(tag);
+				return;
+			}
+		}
+
+		TagRow row = new TagRow();
+		row.add(tag);
+		tag_rows.add(row);
 	}
 
 	public int numTags() {
 		return tag_list.size();
 	}
 
+	public List<Tag> getTags(int id) {
+		return tag_map.get(id);
+	}
+
 	public List<Tag> getTags() {
 		return tag_list;
 	}
 
-	public List<List<Tag>> getTagRows() {
-		return null;
+	public List<TagRow> getTagRows() {
+		return tag_rows;
 	}
 
 	public void draw(PGraphics pg) {
@@ -972,19 +1000,56 @@ public class TagLibrary {
 }
 
 
-public class TagRow {
+public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 
 	private ArrayList<Tag> tags = new ArrayList<Tag>();
 
-	/*
-	private class TagComparator implements Comparator {
-		
-	}
-	*/
+	private double maxX = Double.NEGATIVE_INFINITY;
+	private double maxY = Double.NEGATIVE_INFINITY;
+	private double minX = Double.POSITIVE_INFINITY;
+	private double minY = Double.POSITIVE_INFINITY;
 
-	public void addTag(Tag tag) {
+	public double getMaxX() { return maxX; }
+	public double getMaxY() { return maxY; }
+	public double getMinX() { return minX; }
+	public double getMinY() { return minY; }
+
+	public Tag get(int i) { return tags.get(i); }
+	public int size() { return tags.size(); }
+
+	public void clear() {
+		tags.clear();
+
+		maxX = maxY = Double.NEGATIVE_INFINITY;
+		minX = minY = Double.POSITIVE_INFINITY;
+	}
+
+	public void add(Tag tag) {
 		tags.add(tag);
-		// Collections.sort(tags);
+
+		if (tag.getMaxX() > maxX) maxX = tag.getMaxX();
+		if (tag.getMinX() < minX) minX = tag.getMinX();
+		if (tag.getMaxY() > maxY) maxY = tag.getMaxY();
+		if (tag.getMinY() < minY) minY = tag.getMinY();
+	}
+
+	public boolean doesContain(Tag tag) {
+		PVector c = tag.getProjectorCenter();
+		
+		if (c.x > maxX) return false;
+		if (c.x < minX) return false;
+		if (c.y > maxY) return false;
+		if (c.y < minY) return false;
+
+		return true;
+	}
+
+	public Iterator<Tag> iterator() { return tags.iterator(); }
+
+	public int compareTo(TagRow that) {
+		if (this.maxX == that.maxX) return 0;
+		else if (this.maxX > that.maxX) return 1;
+		else return -1;
 	}
 }
 
