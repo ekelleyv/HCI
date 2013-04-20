@@ -22,6 +22,8 @@ public class TagLibrary {
 		TagRow row = new TagRow();
 		row.add(tag);
 		tag_rows.add(row);
+
+		Collections.sort(tag_rows);
 	}
 
 	public int numTags() {

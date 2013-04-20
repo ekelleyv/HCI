@@ -2,7 +2,7 @@ import java.util.*;
 
 public static int NUM_CORNERS = 4;
 
-public class Tag {
+public class Tag implements Comparable<Tag> {
 	private int id;
 
 	private PVector[] cam_corners;
@@ -105,6 +105,12 @@ public class Tag {
 			pg.fill(255, 0, 0);
 			pg.ellipse(c[i].x, c[i].y, 5, 5);
 		}
+	}
+
+	public int compareTo(Tag that) {
+		if (this.maxX == that.maxX) return 0;
+		else if (this.maxX > that.maxX) return 1;
+		else return -1;
 	}
 }
 

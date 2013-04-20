@@ -31,6 +31,8 @@ public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 		if (tag.getMinX() < minX) minX = tag.getMinX();
 		if (tag.getMaxY() > maxY) maxY = tag.getMaxY();
 		if (tag.getMinY() < minY) minY = tag.getMinY();
+
+		Collections.sort(tags);
 	}
 
 	public boolean doesContain(Tag tag) {
@@ -47,8 +49,8 @@ public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 	public Iterator<Tag> iterator() { return tags.iterator(); }
 
 	public int compareTo(TagRow that) {
-		if (this.maxX == that.maxX) return 0;
-		else if (this.maxX > that.maxX) return 1;
+		if (this.maxY == that.maxY) return 0;
+		else if (this.maxY > that.maxY) return 1;
 		else return -1;
 	}
 }

@@ -5,8 +5,10 @@ class Translate {
 	private Homography h = new Homography();
 
 	public void init(TagLibrary tl) {
-		PVector[] cam = new PVector[tl.numTags() * 4];
-		PVector[] proj = new PVector[tl.numTags() * 4];
+		this.h = new Homography();
+
+		PVector[] cam = new PVector[tl.numTags() * NUM_CORNERS];
+		PVector[] proj = new PVector[tl.numTags() * NUM_CORNERS];
 
 		int i = 0;
 		for (Tag tag : tl.getTags()) {
