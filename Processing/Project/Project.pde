@@ -31,6 +31,7 @@ PFrame disp_frame;
 PGraphics proj_buffer;
 PGraphics disp_buffer;
 TagLibrary tags;
+Translate trans = new Translate();
 
 // Application application = new RootApplication();
 
@@ -94,6 +95,8 @@ void draw() {
       else {
         init_count = 0;
         init_on = false;
+        init.addProjectorCorners(tags);
+        trans.init(tags);
       }
     }
     else {
@@ -104,6 +107,7 @@ void draw() {
 void keyPressed() {
   if (key == 'i' || key == 'I') {
     init_on = true;
+    init_count = 0;
   }
 }
 

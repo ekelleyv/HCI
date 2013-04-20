@@ -14,7 +14,7 @@ class Grid {
 
 		//Load images
 		String image_prefix = sketchPath("../libraries/nyar4psg/patternMaker/examples/gif/4x4_384_");
-		int num_images = row*col;
+		int num_images = row * col;
 		for (int i = 1; i < (num_images+1); i++) {
 			ar_images.add(loadImage(image_prefix + i + ".gif"));
 		}
