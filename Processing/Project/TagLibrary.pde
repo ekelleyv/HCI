@@ -8,8 +8,10 @@ public class TagLibrary {
 
 	public void addTag(Tag tag) {
 		tag_list.add(tag);
+		
 		tag_map.put(tag.getId(), tag);
 
+		// Add tag to existing tag row if possible.
 		for (TagRow row : tag_rows) {
 			if (row.doesContain(tag)) {
 				row.add(tag);
@@ -48,5 +50,11 @@ public class TagLibrary {
 		for (Tag tag : tag_list) {
 			tag.drawCam(pg);
 		}
+	}
+
+	public void clear() {
+		tag_list.clear();
+		tag_map.clear();
+		tag_rows.clear();
 	}
 }

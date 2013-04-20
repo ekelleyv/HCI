@@ -40,7 +40,36 @@ public class Tag {
 	public double getMinX() { return minX; }
 	public double getMinY() { return minY; }
 
-	void applyHomography(Homography h) {
+	public void setProjectorCorners(PVector[] corners) {
+		assert(corners.length == NUM_CORNERS);
+
+		projector_corners = corners;
+
+		maxX = maxY = Double.POSITIVE_INFINITY;
+		minX = minY = Double.NEGATIVE_INFINITY;
+
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			PVector v = projector_corners[i];
+
+			if (v.x > maxX) maxX = v.x;
+			if (v.y > maxY) maxY = v.y;
+			if (v.x < minX) minX = v.x;
+			if (v.y < minY) minY = v.y;
+		}
+
+		projector_center = getCenter(projector_corners);
+	}
+
+	public void applyHomography(Homography h) {
+		PVector[] corners = new PVector[4];
+
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			corners[i] = h.applyHomography(cam_corners[i]);
+		}
+
+		setProjectorCorners(corners);
+
+		/*
 		maxX = maxY = Double.POSITIVE_INFINITY;
 		minX = minY = Double.NEGATIVE_INFINITY;
 
@@ -56,18 +85,19 @@ public class Tag {
 		}
 
 		projector_center = getCenter(projector_corners);
+		*/
 	}
 
-	void drawCam(PGraphics pg) {
+	public void drawCam(PGraphics pg) {
 		drawCorners(pg, cam_corners);
 	}
 
-	void drawProjector(PGraphics pg) {
+	public void drawProjector(PGraphics pg) {
 		drawCorners(pg, projector_corners);
 	}
 
-	void drawCorners(PGraphics pg, PVector[] c) {
-		fill(0, 255, 0);
+	public void drawCorners(PGraphics pg, PVector[] c) {
+		pg.fill(0, 255, 0);
 		for (int i = 0; i < NUM_CORNERS; i++) {
 			String s = i + " : (" + int(c[i].x) + "," + int(c[i].y) + ")";
 			pg.fill(0);

@@ -88,7 +88,7 @@ void draw() {
 
     if (init_on) {
       if (init_count < init_length) {
-        init.run();
+        init.generate_display();
         init_count++;
       }
       else {
