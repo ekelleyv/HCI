@@ -4,7 +4,7 @@ import processing.opengl.*; // for OPENGL rendering
 import codeanticode.gsvideo.*; // the GSVideo library
 import com.shigeodayo.pframe.*; // the PFrame library
 
-boolean iSight = false;
+boolean iSight = true;
 
 // Global Objects
 Capture cam;
@@ -37,8 +37,16 @@ PGraphics proj_buffer;
 PGraphics disp_buffer;
 
 // Application application = new RootApplication();
+Application application = new TOYProgram();
 
 void setup() {
+
+  String[] cameras = Capture.list();
+  println(cameras);
+
+  if (cameras.length < 12) {
+    iSight = true;
+  }
 
   if (iSight) {
     cam_width = 640;
@@ -47,7 +55,7 @@ void setup() {
   } else {
     cam_width = 1280;
     cam_height = 960;
-    cam_number = 15;
+    cam_number = 12;
   }
 
   //Create display
@@ -58,8 +66,6 @@ void setup() {
 
   // Create camera object
   println("Setting Up Camera");
-  String[] cameras = Capture.list();
-  println(cameras);
   cam = new Capture(this, cameras[cam_number]);
   cam.start();
 
@@ -69,11 +75,10 @@ void setup() {
   patternPath = sketchPath("../libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns");
   ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
   
+  application.init(proj_width, proj_height);
   init = new Initialize();
   trans = new Translate();
   tags = new TagLibrary();
-
-  // application.init(proj_width, proj_height);
 
   // Setting Up Monitor
   disp_buffer = createGraphics(cam_width, cam_height);
@@ -102,8 +107,7 @@ void draw() {
       }
     }
     else {
-      background(0);
-      // application.update(tags);
+      application.update(tags);
     }
 }
 void keyPressed() {
