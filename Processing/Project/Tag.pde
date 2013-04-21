@@ -42,6 +42,7 @@ public class Tag implements Comparable<Tag> {
 	public double getMinY() { return minY; }
 
 	public void setProjectorCorners(PVector[] corners) {
+		assert(corners != NULL);
 		assert(corners.length == NUM_CORNERS);
 
 		projector_corners = corners;
