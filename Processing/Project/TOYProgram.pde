@@ -60,7 +60,7 @@ public class TOYProgram implements Application {
        }  
     }
     
-    public TOYProgram(int im_width, int im_height) {
+    public TOYProgram() {
       this.registers = new int[4];
     }
     

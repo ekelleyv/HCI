@@ -107,7 +107,7 @@ void draw() {
       }
     }
     else {
-      application.update(tags);
+      application.update(tags, proj_buffer);
     }
 }
 void keyPressed() {
