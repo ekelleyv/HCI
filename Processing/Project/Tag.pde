@@ -125,6 +125,10 @@ public class Tag implements Comparable<Tag> {
 			pg.fill(255, 0, 0);
 			pg.ellipse(c[i].x, c[i].y, 5, 5);
 		}
+
+		pg.fill(255);
+		pg.textSize(32);
+		pg.text(id, c[0].x + 50, c[0].y);
 	}
 
 	public int compareTo(Tag that) {
