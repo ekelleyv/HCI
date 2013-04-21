@@ -17,11 +17,12 @@ public class Tag implements Comparable<Tag> {
 	private double minY = Double.POSITIVE_INFINITY;
 
 	Tag(int id, PVector[] cam_corners) {
+		assert(cam_corners != null);
 		assert(cam_corners.length == NUM_CORNERS);
 
 		this.id = id;
 		this.cam_corners = cam_corners;
-		this.cam_center = getCenter(cam_corners);
+		// this.cam_center = getCenter(cam_corners);
 	}
 
 	private PVector getCenter(PVector[] corners) {
@@ -41,6 +42,7 @@ public class Tag implements Comparable<Tag> {
 	public double getMinY() { return minY; }
 
 	public void setProjectorCorners(PVector[] corners) {
+		assert(corners != null);
 		assert(corners.length == NUM_CORNERS);
 
 		projector_corners = corners;
