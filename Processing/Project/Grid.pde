@@ -20,12 +20,12 @@ class Grid {
 		}
 	}
 
-	public void generate_display() {
-		background(255);
+	public void generate_display(PGraphics pg) {
+		pg.background(255);
 
-		for (int id = 1; id < (ar_images.size()+1); id++) {
+		for (int id = 0; id < ar_images.size(); id++) {
 			PVector[] corners = getTagCorners(id);
-			image(ar_images.get(id-1), corners[0].x, corners[0].y, marker_width, marker_width);
+			pg.image(ar_images.get(id), corners[0].x, corners[0].y, marker_width, marker_width);
 		}
 
 		/*
@@ -39,7 +39,7 @@ class Grid {
 	}
 
 	public PVector[] getTagCorners(int id) {
-		return getTagCorners((id-1) / col, (id-1) % col);
+		return getTagCorners(id / col, id % col);
 	}
 
 	private PVector[] getTagCorners(int i, int j) {

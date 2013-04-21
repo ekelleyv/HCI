@@ -24,6 +24,10 @@ class Translate {
 			}
 		}
 
+		println();
+		for (int j = 0; j < cam.length; j++) println(cam[j] + " = " + proj[j]);
+		println();
+
 		h.computeHomography(cam, proj);
 	}
 
@@ -34,6 +38,6 @@ class Translate {
 	}
 
 	public void debug(TagLibrary tl, PGraphics pg) {
-		tl.drawCam(pg);
+		tl.drawProj(pg);
 	}
 }

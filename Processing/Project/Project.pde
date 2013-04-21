@@ -29,7 +29,7 @@ int proj_height = 1024;
 // Init variables
 boolean init_on = false;
 int init_count = 0;
-int init_length = 30;
+int init_length = 10;
 
 DispApplet disp_applet;
 PFrame disp_frame;
@@ -58,7 +58,7 @@ void setup() {
   } else {
     cam_width = 1280;
     cam_height = 960;
-    cam_number = 12;
+    cam_number = 15;
   }
 
   //Create display
@@ -83,6 +83,8 @@ void setup() {
   trans = new Translate();
   tags = new TagLibrary();
 
+  proj_buffer = createGraphics(proj_width, proj_height);
+
   // Setting Up Monitor
   println("Setting up Monitor");
   disp_buffer = createGraphics(cam_width, cam_height);
@@ -100,20 +102,28 @@ void draw() {
 
     if (init_on) {
       if (init_count < init_length) {
-        init.generate_display();
+        proj_buffer.beginDraw();
+        init.generate_display(proj_buffer);
+        proj_buffer.endDraw();
         init_count++;
       } else {
-        init_count = 0;
-        init_on = false;
         init.addProjectorCorners(tags);
         trans.init(tags);
-      }
 
+        init_count = 0;
+        init_on = false;
+      }
     } else {
-      background(0);
-      application.update(tags, proj_buffer);
+      trans.run(tags);
+      proj_buffer.beginDraw();
+      proj_buffer.background(0);
+      // init.generate_display(proj_buffer);
+      // application.update(tags, proj_buffer);
       trans.debug(tags, proj_buffer);
+      proj_buffer.endDraw();
     }
+
+    image(proj_buffer, 0, 0);
 }
 
 void keyPressed() {
@@ -134,10 +144,11 @@ private class DispApplet extends PApplet {
 
   void draw() {
     disp_buffer.beginDraw();
-    disp_buffer.image(cam, 0, 0, cam_width, cam_height);
-    disp_buffer.endDraw();
-
+    if (cam != null) {
+      disp_buffer.image(cam, 0, 0, cam_width, cam_height);
+    }
     tags.drawCam(disp_buffer);
+    disp_buffer.endDraw();
 
     image(disp_buffer, 0, 0);
   }

@@ -1,12 +1,8 @@
 class Initialize {
-	private Grid init_grid;
+	private Grid init_grid = new Grid(1, 1, 500);
 
-	public Initialize() {
-		init_grid = new Grid(5, 5, 80);
-	}
-
-	public void generate_display() {		
-		init_grid.generate_display();
+	public void generate_display(PGraphics pg) {		
+		init_grid.generate_display(pg);
 	}
 
 	private void addProjectorCorners(Tag tag) {

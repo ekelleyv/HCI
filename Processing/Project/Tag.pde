@@ -22,7 +22,11 @@ public class Tag implements Comparable<Tag> {
 
 		this.id = id;
 		this.cam_corners = cam_corners;
-		// this.cam_center = getCenter(cam_corners);
+		this.cam_center = getCenter(cam_corners);
+
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			cam_corners[i].z = 1.0;
+		}
 	}
 
 	private PVector getCenter(PVector[] corners) {
@@ -44,6 +48,10 @@ public class Tag implements Comparable<Tag> {
 	public void setProjectorCorners(PVector[] corners) {
 		assert(corners != null);
 		assert(corners.length == NUM_CORNERS);
+
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			corners[i].z = 1.0;
+		}
 
 		projector_corners = corners;
 
@@ -94,11 +102,21 @@ public class Tag implements Comparable<Tag> {
 		drawCorners(pg, cam_corners);
 	}
 
-	public void drawProjector(PGraphics pg) {
+	public void drawProj(PGraphics pg) {
 		drawCorners(pg, projector_corners);
 	}
 
+	public void debug() {
+		print("Tag - " + id + " ");
+		for (int i = 0; i < NUM_CORNERS; i++) print(" [ " + cam_corners[i].x + ", " + cam_corners[i].y + ", " + cam_corners[i].z + " ] ");
+		print(" ");
+		for (int i = 0; i < NUM_CORNERS; i++) print(" [ " + projector_corners[i].x + ", " + projector_corners[i].y + ", " + projector_corners[i].z + " ] ");
+		println();
+	}
+
 	public void drawCorners(PGraphics pg, PVector[] c) {
+		if (c == null) return;
+
 		pg.fill(0, 255, 0);
 		for (int i = 0; i < NUM_CORNERS; i++) {
 			String s = i + " : (" + int(c[i].x) + "," + int(c[i].y) + ")";

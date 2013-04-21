@@ -38,7 +38,7 @@ class Detect {
 		nya.detect(cam_image);
 
 		for (int i = 0; i < num_markers; i++) {
-			if (!nya.isExistMarker(i)) { continue; } //Continue if marker does not exist
+			if (!nya.isExistMarker(i)) { continue; } // Continue if marker does not exist
 
 			PVector[] pos2d = nya.getMarkerVertex2D(i);
 
@@ -47,7 +47,7 @@ class Detect {
 			for (int j = 0; j < num_tags; j++) {
 				PVector[] corners = new PVector[4];
 				for (int k = 0; k < NUM_CORNERS; k++) {
-					corners[j] = pos2d[j * NUM_CORNERS + k];
+					corners[k] = pos2d[j * NUM_CORNERS + k];
 					assert(corners[j] != null);
 				}
 				tags.addTag(new Tag(i, corners));
