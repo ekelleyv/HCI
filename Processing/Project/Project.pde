@@ -94,17 +94,16 @@ void draw() {
       if (init_count < init_length) {
         init.generate_display();
         init_count++;
-      }
-      else {
+      } else {
         init_count = 0;
         init_on = false;
         init.addProjectorCorners(tags);
         trans.init(tags);
       }
-    }
-    else {
+    } else {
       background(0);
-      // application.update(tags);
+      application.update(tags, disp_buffer);
+      trans.debug(tags, disp_buffer);
     }
 }
 
