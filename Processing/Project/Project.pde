@@ -75,7 +75,7 @@ void draw() {
     }
 
     //get_translation();
-    assembly.update();
+    //assembly.update();
 }
 
 

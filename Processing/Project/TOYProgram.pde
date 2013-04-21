@@ -84,7 +84,7 @@ public class TOYProgram {
               assembly.update(pg, registers);
            } 
            return;
-        }       
+        }
     }
     
     private boolean isInteger(String arg) {
