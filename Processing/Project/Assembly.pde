@@ -25,6 +25,7 @@ class Assembly {
     draw_grid(pg);
     update_reg_vals(pg, regs);
     draw_output(pg);
+    pg.endDraw();
   }
 
   void add_output(int val) {
@@ -35,71 +36,71 @@ class Assembly {
   }
 
   void draw_grid(PGraphics pg) {
-    background(0);
-    noFill();
+    pg.background(0);
+    pg.noFill();
 
     //Border
-    stroke(255);
-    strokeWeight(10);
-    rect(10, 10, width-15, height-15);
+    pg.stroke(255);
+    pg.strokeWeight(10);
+    pg.rect(10, 10, width-15, height-15);
 
     //Center Line
-    fill(255, 255, 255);
-    line(width/2-5, 10, width/2-5, height);
+    pg.fill(255, 255, 255);
+    pg.line(width/2-5, 10, width/2-5, height);
 
     //Code header
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    text("Code", width/4, 40);
+    pg.textSize(32);
+    pg.textAlign(CENTER, CENTER);
+    pg.text("Code", width/4, 40);
 
     //Memory/Output Line
-    line(width/2, height/4, width, height/4);
+    pg.line(width/2, height/4, width, height/4);
 
-    text("Output", 3*width/4, height/4 + 40);
+    pg.text("Output", 3*width/4, height/4 + 40);
 
-    fill(217, 105, 0);
-    rect(width/2, 10, width/8-9, height/4-10);
-    fill(255, 187, 0);
-    rect(5*width/8, 10, width/8-9, height/4-10);
-    fill(217, 102, 111);
-    rect(6*width/8, 10, width/8-9, height/4-10);
-    fill(4, 117, 100);
-    rect(7*width/8, 10, width/8-9, height/4-10);
+    pg.fill(217, 105, 0);
+    pg.rect(width/2, 10, width/8-9, height/4-10);
+    pg.fill(255, 187, 0);
+    pg.rect(5*width/8, 10, width/8-9, height/4-10);
+    pg.fill(217, 102, 111);
+    pg.rect(6*width/8, 10, width/8-9, height/4-10);
+    pg.fill(4, 117, 100);
+    pg.rect(7*width/8, 10, width/8-9, height/4-10);
 
 
-    fill(255);
-    text("A", 9*width/16, 40);
-    text("B", 11*width/16, 40);
-    text("C", 13*width/16, 40);
-    text("D", 15*width/16, 40);
+    pg.fill(255);
+    pg.text("A", 9*width/16, 40);
+    pg.text("B", 11*width/16, 40);
+    pg.text("C", 13*width/16, 40);
+    pg.text("D", 15*width/16, 40);
   }
 
   void update_reg_vals(PGraphics pg, int[] regs) {
-    draw_val(regA, regs[0]);
-    draw_val(regB, regs[1]);
-    draw_val(regC, regs[2]);
-    draw_val(regD, regs[3]);
+    draw_val(regA, regs[0], pg);
+    draw_val(regB, regs[1], pg);
+    draw_val(regC, regs[2], pg);
+    draw_val(regD, regs[3], pg);
   }
 
-  void draw_val(int val, int num) {
+  void draw_val(int val, int num, PGraphics pg) {
     int offset = num*2+9;
-    fill(255);
-    textSize(64);
+    pg.fill(255);
+    pg.textSize(64);
     if (val > 1000) {
-      textSize(40);
+      pg.textSize(40);
     }
-    text(val, offset*width/16, 120);
+    pg.text(val, offset*width/16, 120);
   }
 
   void draw_output(PGraphics pg) {
-    fill(255);
-    textSize(32);
+    pg.fill(255);
+    pg.textSize(32);
     int output_start = output_count - 15;
     if (output_start < 0) {
       output_start = 0;
     }
     for (int i = output_start; i < output_count; i++) {
-      text(output[i], width/2+80, height/4+80 + (i-output_start)*32);
+      pg.text(output[i], width/2+80, height/4+80 + (i-output_start)*32);
     }
   }
 

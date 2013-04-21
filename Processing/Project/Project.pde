@@ -47,6 +47,9 @@ void setup() {
   if (cameras.length < 12) {
     iSight = true;
   }
+  else {
+    iSight = false;
+  }
 
   if (iSight) {
     cam_width = 640;
@@ -81,6 +84,7 @@ void setup() {
   tags = new TagLibrary();
 
   // Setting Up Monitor
+  println("Setting up Monitor");
   disp_buffer = createGraphics(cam_width, cam_height);
   disp_applet = new DispApplet();
   disp_frame = new PFrame(disp_applet, 210, 0);
@@ -110,6 +114,7 @@ void draw() {
       application.update(tags, proj_buffer);
     }
 }
+
 void keyPressed() {
   if (key == 'i' || key == 'I') {
     init_on = true;

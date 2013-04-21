@@ -40,17 +40,15 @@ class Detect {
 
 			PVector[] pos2d = nya.getMarkerVertex2D(i);
 
-			int num_tags = pos2d.length/4;
+			int num_tags = pos2d.length / NUM_CORNERS;
 
-			// for (int j = 0; j < num_tags; j++) {
-			// 	PVector[] corners = new PVector[4];
-			// 	for (int k = 0; k < 4; k++) {
-			// 		corners[j].x = pos2d[j + k].x;
-			// 		corners[j].y = pos2d[j + k].y;
-			// 	}
-			// 	Tag tag = new Tag(i, corners);
-			// 	tags.addTag(tag);
-			// }
+			for (int j = 0; j < num_tags; j++) {
+				PVector[] corners = new PVector[4];
+				for (int k = 0; k < NUM_CORNERS; k++) {
+					corners[j] = pos2d[j * NUM_CORNERS + k];
+				}
+				tags.addTag(new Tag(i, corners));
+			}
 		}
 		return tags;
 	}
