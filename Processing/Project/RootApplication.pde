@@ -12,7 +12,7 @@ public class RootApplication implements Application {
 		// applications.put(0, new TOYProgram());
 	}
 
-	public void update(TagLibrary tl) {
+	public void update(TagLibrary tl, PGraphics pg) {
 		Application p = null; /* Choose PROGRAM */
 		
 		if (p != a) {
@@ -20,7 +20,7 @@ public class RootApplication implements Application {
 			a.init(w, h);
 		}
 
-		if (a != null) a.update(tl);
+		if (a != null) a.update(tl, pg);
 	}
 	
 }

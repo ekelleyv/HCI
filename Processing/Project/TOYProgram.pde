@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.io.*;
 
-public class TOYProgram {
+public class TOYProgram implements Application {
     private int[] registers;
     private List<TagRow> commands;
     private Hashtable<String, Integer> jumps;
@@ -62,6 +62,10 @@ public class TOYProgram {
     
     public TOYProgram(int im_width, int im_height) {
       this.registers = new int[4];
+    }
+    
+    public void init(int im_width, int im_height) {
+      this.registers = new int[4];
       this.isRunning = false;
       this.last_time = System.currentTimeMillis();
       this.eip = 0;
@@ -69,10 +73,19 @@ public class TOYProgram {
     }
     
     // called every time in the draw loop
-    public void Update(TagLibrary newCommands, PGraphics pg) {
+    public void update(TagLibrary newCommands, PGraphics pg) {
         if (!isRunning) {
            commands = newCommands.getTagRows();
            eip = 0;
+           // see if run tag
+           List<Tag> run = newCommands.getTags(23);
+           
+           if (run != null) {
+              isRunning = true;
+              last_time = System.currentTimeMillis();
+              Step();
+              assembly.update(pg, registers); 
+           }
         }
         else {
            // see if execute another step
@@ -84,7 +97,7 @@ public class TOYProgram {
               assembly.update(pg, registers);
            } 
            return;
-        }       
+        }
     }
     
     private boolean isInteger(String arg) {
@@ -266,6 +279,9 @@ public class TOYProgram {
           System.err.println("Error with number of arguments on line: " + eip);
         else
           labelCommand(MapId(line.get(1).id));
+      }
+      else if (command.equals("RUN") || command.equals("ASSEMBLY")) {
+         // ignore these tagRows 
       }
       else {
         System.err.println("Command not found: " + command);
