@@ -7,6 +7,11 @@ class Translate {
 	public void init(TagLibrary tl) {
 		this.h = new Homography();
 
+		if (tl.numTags() == 0) {
+			System.out.println("No tags detected in initialization.");
+			return;
+		}
+
 		PVector[] cam = new PVector[tl.numTags() * NUM_CORNERS];
 		PVector[] proj = new PVector[tl.numTags() * NUM_CORNERS];
 
