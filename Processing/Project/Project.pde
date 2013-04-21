@@ -76,6 +76,7 @@ void setup() {
   // application.init(proj_width, proj_height);
 
   // Setting Up Monitor
+  println("Setting up Monitor");
   disp_buffer = createGraphics(cam_width, cam_height);
   disp_applet = new DispApplet();
   disp_frame = new PFrame(disp_applet, 210, 0);
@@ -106,6 +107,7 @@ void draw() {
       // application.update(tags);
     }
 }
+
 void keyPressed() {
   if (key == 'i' || key == 'I') {
     init_on = true;
