@@ -1,13 +1,21 @@
 class Initialize {
-	Grid init_grid;
+	private Grid init_grid;
 
-	Initialize() {
+	public Initialize() {
 		init_grid = new Grid(5, 5, 80);
 	}
 
-	void run () {
-		int start = millis();
-		int init_length = 10000;
+	public void generate_display() {		
 		init_grid.generate_display();
+	}
+
+	private void addProjectorCorners(Tag tag) {
+		tag.setProjectorCorners(init_grid.getTagCorners(tag.getId()));
+	}
+
+	public void addProjectorCorners(TagLibrary tl) {
+		for (Tag tag : tl.getTags()) {
+			addProjectorCorners(tag);
+		}
 	}
 }

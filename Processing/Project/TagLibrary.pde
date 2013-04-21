@@ -1,28 +1,62 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class TagLibrary {
 
-	ArrayList<Tag> tags = new ArrayList<Tag>();
+	ArrayList<Tag> tag_list = new ArrayList<Tag>();
+	HashMultimap<Integer, Tag> tag_map = new HashMultimap<Integer, Tag>();
+	ArrayList<TagRow> tag_rows = new ArrayList<TagRow>();
 
 	public void addTag(Tag tag) {
-		tags.add(tag);
+		tag_list.add(tag);
+		
+		tag_map.put(tag.getId(), tag);
+
+		// Add tag to existing tag row if possible.
+		for (TagRow row : tag_rows) {
+			if (row.doesContain(tag)) {
+				row.add(tag);
+				return;
+			}
+		}
+
+		TagRow row = new TagRow();
+		row.add(tag);
+		tag_rows.add(row);
+
+		Collections.sort(tag_rows);
 	}
 
 	public int numTags() {
-		return tags.size();
+		return tag_list.size();
+	}
+
+	public List<Tag> getTags(int id) {
+		return tag_map.get(id);
 	}
 
 	public List<Tag> getTags() {
-		return tags;
+		return tag_list;
 	}
 
-	public List<List<Tag>> getTagRows() {
-		return null;
+	public List<TagRow> getTagRows() {
+		return tag_rows;
 	}
 
-	public void draw(PGraphics pg) {
-		for (Tag tag : tags) {
+	public void drawProjector(PGraphics pg) {
+		for (Tag tag : tag_list) {
 			tag.drawProjector(pg);
 		}
+	}
+
+	public void drawCam(PGraphics pg) {
+		for (Tag tag : tag_list) {
+			tag.drawCam(pg);
+		}
+	}
+
+	public void clear() {
+		tag_list.clear();
+		tag_map.clear();
+		tag_rows.clear();
 	}
 }

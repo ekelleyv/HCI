@@ -4,13 +4,15 @@ import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 class Translate {
 	private Homography h = new Homography();
 
-	static void translate_init(TagLibrary tl) {
-		PVector[] cam = new PVector[tl.numTags() * 4];
-		PVector[] proj = new PVector[tl.numTags() * 4];
+	public void init(TagLibrary tl) {
+		this.h = new Homography();
+
+		PVector[] cam = new PVector[tl.numTags() * NUM_CORNERS];
+		PVector[] proj = new PVector[tl.numTags() * NUM_CORNERS];
 
 		int i = 0;
 		for (Tag tag : tl.getTags()) {
-			for (int j = 0; j < Tag.NUM_CORNERS; j++) {
+			for (int j = 0; j < NUM_CORNERS; j++) {
 				cam[i] = tag.getCamCorners()[j];
 				proj[i] = tag.getProjectorCorners()[j];
 				i++;
@@ -20,13 +22,13 @@ class Translate {
 		h.computeHomography(cam, proj);
 	}
 
-	static void translate_run(TagLibrary tl) {
+	public void run(TagLibrary tl) {
 		for (Tag tag : tl.getTags()) {
 			tag.applyHomography(h);
 		}
 	}
 
-	static void translate_debug(TagLibrary tl, PGraphics pg) {
-		tl.draw(pg);
+	public void debug(TagLibrary tl, PGraphics pg) {
+		tl.drawCam(pg);
 	}
 }
