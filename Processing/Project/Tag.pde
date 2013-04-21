@@ -17,6 +17,7 @@ public class Tag implements Comparable<Tag> {
 	private double minY = Double.POSITIVE_INFINITY;
 
 	Tag(int id, PVector[] cam_corners) {
+		assert(cam_corners != NULL);
 		assert(cam_corners.length == NUM_CORNERS);
 
 		this.id = id;
