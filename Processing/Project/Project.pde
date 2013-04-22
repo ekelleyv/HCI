@@ -66,7 +66,7 @@ void setup() {
   //Create display
   println("Setting Up Projector Display");
   size(proj_width, proj_height);
-  frameRate(30);
+  // frameRate(30);
   frame.setTitle("Projector");
 
   // Create camera object
@@ -142,7 +142,7 @@ private class DispApplet extends PApplet {
   void setup() {
     size(cam_width, cam_height);
     background(255, 0, 0);
-    frameRate(30);
+    // frameRate(30);
   }
 
   void draw() {

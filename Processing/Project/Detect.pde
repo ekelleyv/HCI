@@ -48,6 +48,8 @@ class Detect {
 
 			int num_tags = pos2d.length / NUM_CORNERS;
 
+			// println("NUM TAGS : " + num_tags);
+
 			for (int j = 0; j < num_tags; j++) {
 				PVector[] corners = new PVector[4];
 				for (int k = 0; k < NUM_CORNERS; k++) {
