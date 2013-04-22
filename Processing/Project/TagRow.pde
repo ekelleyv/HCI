@@ -53,4 +53,16 @@ public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 		else if (this.maxY > that.maxY) return 1;
 		else return -1;
 	}
+
+	public String toString() {
+		String s = "TagRow:{ tags=";
+		s += tags;
+
+		s += ", maxX=" + maxX;
+		s += ", minX=" + minX;
+		s += ", maxY=" + maxY;
+		s += ", minY=" + minY;
+
+		return s + "}\n";
+	}
 }
