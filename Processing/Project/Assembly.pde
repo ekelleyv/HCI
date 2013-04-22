@@ -15,9 +15,9 @@ class Assembly {
     this.im_width = im_width;
     this.im_height = im_height;
     regA = 0;
-    regB = 0;
-    regC = 0;
-    regD = 0;
+    regB = 1;
+    regC = 2;
+    regD = 3;
   }
 
   void update(PGraphics pg, int[] regs) {
@@ -82,7 +82,7 @@ class Assembly {
     draw_val(regD, regs[3], pg);
   }
 
-  void draw_val(int val, int num, PGraphics pg) {
+  void draw_val(int num, int val, PGraphics pg) {
     int offset = num*2+9;
     pg.fill(255);
     pg.textSize(64);

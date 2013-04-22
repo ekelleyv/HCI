@@ -29,7 +29,7 @@ int proj_height = 1024;
 // Init variables
 boolean init_on = false;
 int init_count = 0;
-int init_length = 10;
+int init_length = 30;
 
 DispApplet disp_applet;
 PFrame disp_frame;
@@ -58,7 +58,7 @@ void setup() {
   } else {
     cam_width = 1280;
     cam_height = 960;
-    cam_number = 15;
+    cam_number = 12;
   }
 
   //Create display
@@ -118,8 +118,8 @@ void draw() {
       proj_buffer.beginDraw();
       proj_buffer.background(0);
       // init.generate_display(proj_buffer);
-      // application.update(tags, proj_buffer);
-      trans.debug(tags, proj_buffer);
+      application.update(tags, proj_buffer);
+      // trans.debug(tags, proj_buffer);
       proj_buffer.endDraw();
     }
 

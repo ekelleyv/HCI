@@ -34,28 +34,29 @@ public class TOYProgram implements Application {
     private int eip;
     private float last_time;
     private Assembly assembly;
+    private PGraphics pgraph;
 
     private String MapId(int id) {
-       if (id == 17)
+       if (id == 16)
          return "MOV";
-       else if (id == 18)
+       else if (id == 17)
          return "PRINT";
-       else if (id == 19)
+       else if (id == 18)
          return "LABEL";
-       else if (id == 20)
+       else if (id == 19)
          return "JNZ";
-       else if (id == 21)
+       else if (id == 20)
          return "ADD";
-       else if (id == 22)
+       else if (id == 21)
          return "SUB";
-       else if (id == 23)
+       else if (id == 22)
          return "RUN";
-       else if (id == 24)
+       else if (id == 23)
          return "BINARY";
-       else if (id == 25)
+       else if (id == 24)
          return "ASSEMBLY";
        else {
-         Integer ret = id - 26;
+         Integer ret = id - 25;
          return ret.toString();
        }  
     }
@@ -66,6 +67,9 @@ public class TOYProgram implements Application {
     
     public void init(int im_width, int im_height) {
       this.registers = new int[4];
+      for (int i = 0; i < registers.length; i++) {
+        registers[i] = 0;
+      }
       this.isRunning = false;
       this.last_time = System.currentTimeMillis();
       this.eip = 0;
@@ -74,6 +78,15 @@ public class TOYProgram implements Application {
     
     // called every time in the draw loop
     public void update(TagLibrary newCommands, PGraphics pg) {
+        this.pgraph = pg;
+        if (System.currentTimeMillis() - last_time > 1000) {
+          for (TagRow row : newCommands.getTagRows()) {
+            for (Tag command : row) {
+              print(MapId(command.getId()));
+            }
+            println();
+          }
+        }
         if (!isRunning) {
            commands = newCommands.getTagRows();
            eip = 0;
@@ -84,14 +97,15 @@ public class TOYProgram implements Application {
               isRunning = true;
               last_time = System.currentTimeMillis();
               Step();
-              assembly.update(pg, registers); 
            }
+           assembly.update(pg, registers); 
         }
         else {
            // see if execute another step
            if (last_time - System.currentTimeMillis() > 1000.0) {
               last_time = System.currentTimeMillis();
               Step();
+              println("Executed one step");
                            
               // update Assembly
               assembly.update(pg, registers);
@@ -149,8 +163,12 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         System.out.println("D: " + registers[3]);
       } else {
-        System.err.println("Error with second tag on line: " + eip);
+        assembly.add_output(Integer.parseInt(arg1));        
       }
+      // } else {
+      //   System.err.println("Error with second tag on line: " + eip);
+      // }
+      println("Reached printCommand");
       eip++;
     }
     
@@ -242,6 +260,7 @@ public class TOYProgram implements Application {
     }
     
     public void Step() {
+      println("In Step function");
       TagRow line = commands.get(eip);
       String command = MapId(line.get(0).id);
       if (command.equals("MOV")) {
@@ -251,10 +270,12 @@ public class TOYProgram implements Application {
           movCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("PRINT")) {
-        if (line.size() != 2)
+        if (line.size() != 2) {
           System.err.println("Error with number of arguments on line: " + eip);
-        else
+          println("Error with number of arguments for print");
+        }else
           printCommand(MapId(line.get(1).id));
+        println("Read print command");
       }
       else if (command.equals("ADD")) {
         if (line.size() != 3)

@@ -1,5 +1,5 @@
 class Initialize {
-	private Grid init_grid = new Grid(1, 1, 500);
+	private Grid init_grid = new Grid(1, 1, 300);
 
 	public void generate_display(PGraphics pg) {		
 		init_grid.generate_display(pg);
