@@ -19,6 +19,10 @@ class Assembly {
     regC = 2;
     regD = 3;
   }
+  
+  void clear_output() {
+    output_count = 0;
+  }
 
   void update(PGraphics pg, int[] regs) {
     pg.beginDraw();
