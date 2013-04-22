@@ -56,6 +56,10 @@ public class TagLibrary {
 		for (Tag tag : tag_list) {
 			tag.drawProj(pg);
 		}
+
+		for (TagRow row : getTagRows()) {
+			row.drawProj(pg);
+		}
 	}
 
 	public void drawCam(PGraphics pg) {
