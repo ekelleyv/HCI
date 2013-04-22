@@ -87,6 +87,8 @@ public class TOYProgram implements Application {
         if (stillRunning == null) {
           isRunning = false;
           assembly.clear_output();
+          commands.clear();
+          jumps.clear();
         }
 
         if (!isRunning) {
@@ -99,6 +101,7 @@ public class TOYProgram implements Application {
            if (run != null) {
               isRunning = true;
               last_time = System.currentTimeMillis();
+              Compile();
               if (eip < this.total_length) {
                 step();
               }
@@ -262,44 +265,63 @@ public class TOYProgram implements Application {
       eip++;
     }
     
+    public void Compile() {
+      for (TagRow line : commands) {
+        String command = MapId(line.get(0).id);
+        if (command.equals("MOV")) {
+          if (line.size() != 3)
+            println("Error with number of arguments on line: " + eip);
+        }
+        else if (command.equals("PRINT")) {
+          if (line.size() != 2)
+            println("Error with number of arguments for print");
+        }
+        else if (command.equals("ADD")) {
+          if (line.size() != 3)
+            println("Error with number of arguments on line: " + eip);
+        }
+        else if (command.equals("SUB")) {
+          if (line.size() != 3)
+            println("Error with number of arguments on line: " + eip);
+        }
+        else if (command.equals("JNZ")) {
+          if (line.size() != 3)
+            println("Error with number of arguments on line: " + eip);
+        }
+        else if (command.equals("LABEL")) {
+          if (line.size() != 2)
+            println("Error with number of arguments on line: " + eip);
+          labelCommand(MapId(line.get(1).id));
+        }
+        else if (command.equals("RUN") || command.equals("ASSEMBLY")) {
+           // ignore these tagRows 
+        }
+        else {
+          println("Command not found: " + command);
+        }
+      }
+    }
+    
     public void step() {
       TagRow line = commands.get(eip);
       String command = MapId(line.get(0).id);
       if (command.equals("MOV")) {
-        if (line.size() != 3)
-          println("Error with number of arguments on line: " + eip);
-        else
-          movCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+        movCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("PRINT")) {
-        if (line.size() != 2) {
-          println("Error with number of arguments for print");
-        }else
-          printCommand(MapId(line.get(1).id));
+         printCommand(MapId(line.get(1).id));
       }
       else if (command.equals("ADD")) {
-        if (line.size() != 3)
-          println("Error with number of arguments on line: " + eip);
-        else
-          addCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+        addCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("SUB")) {
-        if (line.size() != 3)
-          println("Error with number of arguments on line: " + eip);
-        else
-          subCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+        subCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("JNZ")) {
-        if (line.size() != 3)
-          println("Error with number of arguments on line: " + eip);
-        else
-          jnzCommand(MapId(line.get(1).id), MapId(line.get(2).id));
+        jnzCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("LABEL")) {
-        if (line.size() != 2)
-          println("Error with number of arguments on line: " + eip);
-        else
-          labelCommand(MapId(line.get(1).id));
+        // ignore label
       }
       else if (command.equals("RUN") || command.equals("ASSEMBLY")) {
          // ignore these tagRows 
