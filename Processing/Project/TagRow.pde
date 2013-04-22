@@ -17,8 +17,8 @@ public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 	public Tag get(int i) { return tags.get(i); }
 	public int size() { return tags.size(); }
 
-	public double Width() { maxY - minY; }
-	public double Height() { maxX - minX; }
+	public double Width() { return maxX - minX; }
+	public double Height() { return maxY - minY; }
 
 	public void clear() {
 		tags.clear();
@@ -41,8 +41,6 @@ public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 	public boolean doesContain(Tag tag) {
 		PVector c = tag.getProjectorCenter();
 		
-		if (c.x > maxX) return false;
-		if (c.x < minX) return false;
 		if (c.y > maxY) return false;
 		if (c.y < minY) return false;
 
@@ -58,9 +56,9 @@ public class TagRow implements Iterable<Tag>, Comparable<TagRow> {
 	}
 
 	public void drawProj(PGraphics pg) {
-		pg.stroke(255);
+		pg.stroke(255, 0, 0);
 		pg.fill(0);
-		pg.rect(minX - 0.1 * Width, minY - 0.1 * Height(), 1.2 * Width(), 1.2 * Height());
+		pg.rect((float) (minX - 30), (float) (minY - 30), (float) (Width() + 60), (float) (Height() + 60));
 	}
 
 	public String toString() {

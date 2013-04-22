@@ -53,12 +53,12 @@ public class TagLibrary {
 	}
 
 	public void drawProj(PGraphics pg) {
-		for (Tag tag : tag_list) {
-			tag.drawProj(pg);
-		}
-
 		for (TagRow row : getTagRows()) {
 			row.drawProj(pg);
+		}
+		
+		for (Tag tag : tag_list) {
+			tag.drawProj(pg);
 		}
 	}
 

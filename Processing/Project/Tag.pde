@@ -55,8 +55,8 @@ public class Tag implements Comparable<Tag> {
 
 		projector_corners = corners;
 
-		maxX = maxY = Double.POSITIVE_INFINITY;
-		minX = minY = Double.NEGATIVE_INFINITY;
+		maxX = maxY = Double.NEGATIVE_INFINITY;
+		minX = minY = Double.POSITIVE_INFINITY;
 
 		for (int i = 0; i < NUM_CORNERS; i++) {
 			PVector v = projector_corners[i];
@@ -118,6 +118,7 @@ public class Tag implements Comparable<Tag> {
 		if (c == null) return;
 
 		pg.fill(0, 255, 0);
+		pg.noStroke();
 		for (int i = 0; i < NUM_CORNERS; i++) {
 			String s = i + " : (" + int(c[i].x) + "," + int(c[i].y) + ")";
 			pg.fill(0);
@@ -128,7 +129,7 @@ public class Tag implements Comparable<Tag> {
 
 		pg.fill(255);
 		pg.textSize(32);
-		pg.text(id, c[0].x + 50, c[0].y);
+		pg.text(id, c[0].x + 50, c[0].y - 20);
 	}
 
 	public int compareTo(Tag that) {

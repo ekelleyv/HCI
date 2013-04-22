@@ -35,6 +35,7 @@ public class TOYProgram implements Application {
     private float last_time;
     private Assembly assembly;
     private PGraphics pgraph;
+    private int total_length;
 
     private String MapId(int id) {
        if (id == 17)
@@ -74,16 +75,22 @@ public class TOYProgram implements Application {
       this.last_time = System.currentTimeMillis();
       this.eip = 0;
       this.assembly = new Assembly(im_width, im_height);
+      this.total_length = 0;
     }
     
     // called every time in the draw loop
     public void update(TagLibrary newCommands, PGraphics pg) {
+        assembly.update(pg, registers);
         this.pgraph = pg;
-        if (System.currentTimeMillis() - last_time > 1000) {
-            System.out.println(newCommands.getTagRows());
+
+        List<Tag> stillRunning = newCommands.getTags(23);
+        if (stillRunning == null) {
+          isRunning = false;
         }
+
         if (!isRunning) {
            commands = newCommands.getTagRows();
+           this.total_length = commands.size() - 1;
            eip = 0;
            // see if run tag
            List<Tag> run = newCommands.getTags(23);
@@ -91,15 +98,21 @@ public class TOYProgram implements Application {
            if (run != null) {
               isRunning = true;
               last_time = System.currentTimeMillis();
-              Step();
+              println("Call step");
+              if (eip < this.total_length) {
+                step();
+              }
+              println("Executed one step");
            }
            assembly.update(pg, registers); 
         }
         else {
            // see if execute another step
-           if (last_time - System.currentTimeMillis() > 1000.0) {
+           if (System.currentTimeMillis() - last_time > 1000.0) {
               last_time = System.currentTimeMillis();
-              Step();
+              if (eip < this.total_length) {
+                step();
+              }
               println("Executed one step");
                            
               // update Assembly
@@ -107,6 +120,7 @@ public class TOYProgram implements Application {
            } 
            return;
         }
+       // println("Return to Project.pde");
     }
     
     private boolean isInteger(String arg) {
@@ -132,7 +146,7 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         movNumber = registers[3];
       } else {
-        System.err.println("Error with second tag on line: " + eip);
+        println("Error with second tag on line: " + eip);
       }
       if (arg2.equals("A")) {
         registers[0] = movNumber;
@@ -143,7 +157,7 @@ public class TOYProgram implements Application {
       } else if (arg2.equals("D")) {
         registers[3] = movNumber;
       } else {
-        System.err.println("Error with third tag on line: " + eip);
+        println("Error with third tag on line: " + eip);
       }
       eip++;
     }
@@ -161,7 +175,7 @@ public class TOYProgram implements Application {
         assembly.add_output(Integer.parseInt(arg1));        
       }
       // } else {
-      //   System.err.println("Error with second tag on line: " + eip);
+      //   println("Error with second tag on line: " + eip);
       // }
       println("Reached printCommand");
       eip++;
@@ -180,7 +194,7 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         addNumber = registers[3];
       } else {
-        System.err.println("Error with second tag on line: " + eip);
+        println("Error with second tag on line: " + eip);
       }
       if (arg2.equals("A")) {
         registers[0] += addNumber;
@@ -191,7 +205,7 @@ public class TOYProgram implements Application {
       } else if (arg2.equals("D")) {
         registers[3] += addNumber;
       } else {
-        System.err.println("Error with third tag on line: " + eip);
+        println("Error with third tag on line: " + eip);
       }
       eip++;
     }
@@ -209,7 +223,7 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         subNumber = registers[3];
       } else {
-        System.err.println("Error with second tag on line: " + eip);
+        println("Error with second tag on line: " + eip);
       }
       if (arg2.equals("A")) {
         registers[0] -= subNumber;
@@ -220,7 +234,7 @@ public class TOYProgram implements Application {
       } else if (arg2.equals("D")) {
         registers[3] -= subNumber;
       } else {
-        System.err.println("Error with third tag on line: " + eip);
+        println("Error with third tag on line: " + eip);
       }
       eip++;
     }
@@ -236,11 +250,11 @@ public class TOYProgram implements Application {
       else if (arg1.equals("D"))
         registerValue = registers[3];
       else 
-        System.err.println("Error with  second tag on line: " + eip);
+        println("Error with  second tag on line: " + eip);
       if (registerValue != 0) {
         Integer new_eip = jumps.get(arg2);
         if (new_eip == null) {
-          System.err.println("Label not recognized");
+          println("Label not recognized");
         }
         eip = new_eip + 1;
       }
@@ -254,19 +268,19 @@ public class TOYProgram implements Application {
       eip++;
     }
     
-    public void Step() {
+    public void step() {
       println("In Step function");
       TagRow line = commands.get(eip);
       String command = MapId(line.get(0).id);
       if (command.equals("MOV")) {
         if (line.size() != 3)
-          System.err.println("Error with number of arguments on line: " + eip);
+          println("Error with number of arguments on line: " + eip);
         else
           movCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("PRINT")) {
         if (line.size() != 2) {
-          System.err.println("Error with number of arguments on line: " + eip);
+          //println("Error with number of arguments on line: " + eip);
           println("Error with number of arguments for print");
         }else
           printCommand(MapId(line.get(1).id));
@@ -274,25 +288,25 @@ public class TOYProgram implements Application {
       }
       else if (command.equals("ADD")) {
         if (line.size() != 3)
-          System.err.println("Error with number of arguments on line: " + eip);
+          println("Error with number of arguments on line: " + eip);
         else
           addCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("SUB")) {
         if (line.size() != 3)
-          System.err.println("Error with number of arguments on line: " + eip);
+          println("Error with number of arguments on line: " + eip);
         else
           subCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("JNZ")) {
         if (line.size() != 3)
-          System.err.println("Error with number of arguments on line: " + eip);
+          println("Error with number of arguments on line: " + eip);
         else
           jnzCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("LABEL")) {
         if (line.size() != 2)
-          System.err.println("Error with number of arguments on line: " + eip);
+          println("Error with number of arguments on line: " + eip);
         else
           labelCommand(MapId(line.get(1).id));
       }
@@ -300,7 +314,8 @@ public class TOYProgram implements Application {
          // ignore these tagRows 
       }
       else {
-        System.err.println("Command not found: " + command);
+        println("Command not found: " + command);
       }
+      println("End Step Function");
     }
 }

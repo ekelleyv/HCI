@@ -26,6 +26,7 @@ class Assembly {
     update_reg_vals(pg, regs);
     draw_output(pg);
     pg.endDraw();
+    //println("Ended Assembly update");
   }
 
   void add_output(int val) {
@@ -40,12 +41,12 @@ class Assembly {
     pg.noFill();
 
     //Border
-    pg.stroke(255);
+    pg.stroke(160);
     pg.strokeWeight(10);
     pg.rect(10, 10, width-15, height-15);
 
     //Center Line
-    pg.fill(255, 255, 255);
+    pg.fill(160, 160, 160);
     pg.line(width/2-5, 10, width/2-5, height);
 
     //Code header

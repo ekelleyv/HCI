@@ -35,7 +35,11 @@ class Detect {
 		assert(cam_image != null);
 
 		TagLibrary tags = new TagLibrary();
-		nya.detect(cam_image);
+		try {
+			nya.detect(cam_image);
+		} catch (Exception e) {
+			System.out.println("We caught the exception.  Yay!");
+		}
 
 		for (int i = 0; i < num_markers; i++) {
 			if (!nya.isExistMarker(i)) { continue; } // Continue if marker does not exist

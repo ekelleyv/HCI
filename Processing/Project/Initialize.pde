@@ -10,6 +10,14 @@ class Initialize {
 	}
 
 	public void addProjectorCorners(TagLibrary tl) {
+		/*
+		if (tl.getTags(0) != null) {
+			if (tl.getTags(0).size() > 0) {
+				addProjectorCorners(tl.getTags(0).get(0));
+			}
+		}
+		*/
+
 		for (Tag tag : tl.getTags()) {
 			addProjectorCorners(tag);
 		}
