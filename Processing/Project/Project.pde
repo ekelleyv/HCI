@@ -31,6 +31,8 @@ boolean init_on = false;
 int init_count = 0;
 int init_length = 30;
 
+boolean trans_debug = false;
+
 DispApplet disp_applet;
 PFrame disp_frame;
 PGraphics proj_buffer;
@@ -117,9 +119,8 @@ void draw() {
       trans.run(tags);
       proj_buffer.beginDraw();
       proj_buffer.background(0);
-      // init.generate_display(proj_buffer);
       application.update(tags, proj_buffer);
-      // trans.debug(tags, proj_buffer);
+      if (trans_debug) trans.debug(tags, proj_buffer);
       proj_buffer.endDraw();
     }
 
@@ -130,6 +131,8 @@ void keyPressed() {
   if (key == 'i' || key == 'I') {
     init_on = true;
     init_count = 0;
+  } else if (key == 'u' || key == 'U') {
+    trans_debug = !trans_debug;
   }
 }
 
