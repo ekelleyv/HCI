@@ -241,6 +241,8 @@ public class TOYProgram implements Application {
         registerValue = registers[2];
       else if (arg1.equals("D"))
         registerValue = registers[3];
+      else if (isInteger(arg1))
+         registerValue = Integer.parseInt(arg1);
       else 
         println("Error with  second tag on line: " + eip);
       if (registerValue != 0) {
