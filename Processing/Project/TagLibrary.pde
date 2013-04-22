@@ -24,24 +24,31 @@ public class TagLibrary {
 		return tag_list;
 	}
 
+	private void insertTagToRow(Tag tag) {
+		// Add tag to existing tag row if possible.
+		for (TagRow row : tag_rows) {
+			if (row.doesContain(tag)) {
+				row.add(tag);
+				return;
+			}
+		}
+
+		TagRow row = new TagRow();
+		row.add(tag);
+		tag_rows.add(row);
+
+		Collections.sort(tag_rows);
+	}
+
 	public List<TagRow> getTagRows() {
 		tag_rows.clear();
 
 		for (Tag tag : tag_list) {
-			// Add tag to existing tag row if possible.
-			for (TagRow row : tag_rows) {
-				if (row.doesContain(tag)) {
-					row.add(tag);
-					return tag_rows;
-				}
-			}
-
-			TagRow row = new TagRow();
-			row.add(tag);
-			tag_rows.add(row);
+			insertTagToRow(tag);
 		}
 
 		Collections.sort(tag_rows);
+		
 		return tag_rows;
 	}
 
