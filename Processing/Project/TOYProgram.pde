@@ -81,7 +81,6 @@ public class TOYProgram implements Application {
         this.pgraph = pg;
         if (System.currentTimeMillis() - last_time > 1000) {
             System.out.println(newCommands.getTagRows());
-          }
         }
         if (!isRunning) {
            commands = newCommands.getTagRows();

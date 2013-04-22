@@ -138,13 +138,13 @@ public class Tag implements Comparable<Tag> {
 	}
 
 	public String toString() {
-		String s = "Tag:{"
+		String s = "Tag:{";
 
 		s += "id=" + id;
-		s += ", cam_corners=" + cam_corners;
-		s += ", cam_center=" + cam_center;
-		s += ", projector_corners=" + projector_corners;
-		s += ", projector_center=" + projector_center;
+		//s += ", cam_corners=" + cam_corners;
+		//s += ", cam_center=" + cam_center;
+		//s += ", projector_corners=" + projector_corners;
+		//s += ", projector_center=" + projector_center;
 
 		return s + "}\n";
 	}
