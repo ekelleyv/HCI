@@ -136,6 +136,18 @@ public class Tag implements Comparable<Tag> {
 		else if (this.maxX > that.maxX) return 1;
 		else return -1;
 	}
+
+	public String toString() {
+		String s = "Tag:{"
+
+		s += "id=" + id;
+		s += ", cam_corners=" + cam_corners;
+		s += ", cam_center=" + cam_center;
+		s += ", projector_corners=" + projector_corners;
+		s += ", projector_center=" + projector_center;
+
+		return s + "}\n";
+	}
 }
 
 //Tag ID Values

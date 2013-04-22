@@ -48,7 +48,7 @@ public class TagLibrary {
 		}
 
 		Collections.sort(tag_rows);
-		
+
 		return tag_rows;
 	}
 
