@@ -87,8 +87,10 @@ public class TOYProgram implements Application {
         if (stillRunning == null) {
           isRunning = false;
           assembly.clear_output();
-          commands.clear();
-          jumps.clear();
+          if (commands != null)
+            commands.clear();
+          if (jumps != null)
+            jumps.clear();
         }
 
         if (!isRunning) {
