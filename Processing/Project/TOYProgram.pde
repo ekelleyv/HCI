@@ -37,26 +37,26 @@ public class TOYProgram implements Application {
     private PGraphics pgraph;
 
     private String MapId(int id) {
-       if (id == 16)
+       if (id == 17)
          return "MOV";
-       else if (id == 17)
-         return "PRINT";
        else if (id == 18)
-         return "LABEL";
+         return "PRINT";
        else if (id == 19)
-         return "JNZ";
+         return "LABEL";
        else if (id == 20)
-         return "ADD";
+         return "JNZ";
        else if (id == 21)
-         return "SUB";
+         return "ADD";
        else if (id == 22)
-         return "RUN";
+         return "SUB";
        else if (id == 23)
-         return "BINARY";
+         return "RUN";
        else if (id == 24)
+         return "BINARY";
+       else if (id == 25)
          return "ASSEMBLY";
        else {
-         Integer ret = id - 25;
+         Integer ret = id - 26;
          return ret.toString();
        }  
     }
@@ -80,11 +80,7 @@ public class TOYProgram implements Application {
     public void update(TagLibrary newCommands, PGraphics pg) {
         this.pgraph = pg;
         if (System.currentTimeMillis() - last_time > 1000) {
-          for (TagRow row : newCommands.getTagRows()) {
-            for (Tag command : row) {
-              print(MapId(command.getId()));
-            }
-            println();
+            System.out.println(newCommands.getTagRows());
           }
         }
         if (!isRunning) {
