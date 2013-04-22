@@ -24,9 +24,12 @@ class Translate {
 			}
 		}
 
+		// Uncomment for println debugging
+		/*
 		println();
 		for (int j = 0; j < cam.length; j++) println(cam[j] + " = " + proj[j]);
 		println();
+		*/
 
 		h.computeHomography(cam, proj);
 	}
