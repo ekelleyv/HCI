@@ -5,13 +5,13 @@ class Translate {
 	private Homography h = new Homography();
 
 	public void init(TagLibrary tl) {
-		this.h = new Homography();
-
 		if (tl.numTags() == 0) {
 			System.out.println("No tags detected in initialization.");
 			return;
 		}
 
+		this.h = new Homography();
+		
 		PVector[] cam = new PVector[tl.numTags() * NUM_CORNERS];
 		PVector[] proj = new PVector[tl.numTags() * NUM_CORNERS];
 

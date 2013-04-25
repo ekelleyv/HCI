@@ -107,6 +107,7 @@ void draw() {
         proj_buffer.beginDraw();
         init.generate_display(proj_buffer);
         proj_buffer.endDraw();
+        
         init_count++;
       } else {
         init.addProjectorCorners(tags);
