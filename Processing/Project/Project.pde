@@ -39,14 +39,14 @@ PGraphics proj_buffer;
 PGraphics disp_buffer;
 
 // Application application = new RootApplication();
-Application application = new TOYProgram();
+Application application = new Binary();
 
 void setup() {
 
   String[] cameras = Capture.list();
   println(cameras);
 
-  if (cameras.length < 12) {
+  if (cameras.length < 15) {
     iSight = true;
   }
   else {
@@ -60,7 +60,7 @@ void setup() {
   } else {
     cam_width = 1280;
     cam_height = 960;
-    cam_number = 12;
+    cam_number = 15;
   }
 
   //Create display
