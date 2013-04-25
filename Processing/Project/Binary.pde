@@ -37,6 +37,10 @@ public class Binary implements Application {
       	}
       }
     }
+    if (longRow == null) {
+      // System.out.println("There is no long row");
+      return;
+    }
 
     // Read Input String
     int iBase;
