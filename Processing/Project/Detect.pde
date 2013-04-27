@@ -43,7 +43,7 @@ class Detect {
 		}
 
 		for (int i = 0; i < num_markers; i++) {
-			if (!nya.isExistMarker(i)) { continue; } // Continue if marker does not exist
+			if (!nya.isExistMarker(i) || nya.getConfidence(i) < 0.5) { continue; } // Continue if marker does not exist
 
 			PVector[] pos2d = nya.getMarkerVertex2D(i);
 
