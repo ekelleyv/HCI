@@ -10,7 +10,7 @@ class Assembly {
   int output_count;
 
   Assembly (int im_width, int im_height) {
-    output = new int[10];
+    output = new String[10];
     output_count = 0;
     this.im_width = im_width;
     this.im_height = im_height;
@@ -119,7 +119,6 @@ class Assembly {
     else {
       pg.text("Waiting...", textX, textY);
     }
-
   }
 
   void draw_output(PGraphics pg) {

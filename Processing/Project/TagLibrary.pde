@@ -4,6 +4,7 @@ public class TagLibrary {
 
 	ArrayList<Tag> tag_list = new ArrayList<Tag>();
 	HashMultimap<Integer, Tag> tag_map = new HashMultimap<Integer, Tag>();
+	// HashMap<Integer, Tag> tag_map = new HashMap<Integer, Tag>();
 	ArrayList<TagRow> tag_rows = new ArrayList<TagRow>();
 
 	public void addTag(Tag tag) {
@@ -18,6 +19,10 @@ public class TagLibrary {
 
 	public List<Tag> getTags(int id) {
 		return tag_map.get(id);
+	}
+
+	public boolean containsTag(int id) {
+		return getTags(id) != null;
 	}
 
 	public List<Tag> getTags() {

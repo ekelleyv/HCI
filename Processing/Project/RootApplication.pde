@@ -1,26 +1,41 @@
 public class RootApplication implements Application {
 
-	// private static Map<int, Application> applications = new HashMap();
+	private Map<Integer, Application> applications = new HashMap<Integer, Application>();
 
 	private int w, h;
-	private Application a = new RootApplication();
 
 	public void init(int w, int h) {
 		this.w = w;
 		this.h = h;
 
-		// applications.put(0, new TOYProgram());
+		applications.put(18, new TOYProgram());
+		applications.put(20, new Binary());
+
+		for (Application a : applications.values()) {
+			a.init(w, h);
+		}
 	}
 
 	public void update(TagLibrary tl, PGraphics pg) {
-		Application p = null; /* Choose PROGRAM */
-		
-		if (p != a) {
-			a = p;
-			a.init(w, h);
+		Application a = null;
+
+		for (int id : applications.keySet()) {
+			if (tl.containsTag(id)) {
+				if (a != null) {
+					System.out.println("Multiple application tags detected.");
+					return;
+				} else {
+					a = applications.get(id);
+				}
+			}
 		}
 
-		if (a != null) a.update(tl, pg);
+		if (a == null) {
+			// System.out.println("No application tag detected.");
+			return;
+		}
+
+		a.update(tl, pg);
 	}
 	
 }
