@@ -120,7 +120,7 @@ public class TOYProgram implements Application {
            } 
         }
         // update Assembly
-        assembly.update(pg, registers);
+        assembly.update(pg, registers, commands, eip, isRunning);
     }
     
     private boolean isInteger(String arg) {
