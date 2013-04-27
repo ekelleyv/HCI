@@ -176,7 +176,7 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         assembly.add_output(Integer.toString(registers[3]));
       } else if (isInteger(arg1)) {
-        assembly.add_output(Integer.parseInt(arg1));        
+        assembly.add_output(arg1);        
       } else {
         String row = Integer.toString(eip);
         String error = row + ": Second tag must either be a register or an integer literal";

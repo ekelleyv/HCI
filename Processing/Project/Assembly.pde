@@ -10,7 +10,7 @@ class Assembly {
   int output_count;
 
   Assembly (int im_width, int im_height) {
-    output = new int[10];
+    output = new String[10];
     output_count = 0;
     this.im_width = im_width;
     this.im_height = im_height;
@@ -99,8 +99,7 @@ class Assembly {
   }
 
   void draw_error(PGraphics pg) {
-    add_output(message);
-
+    // add_output(message);
   }
 
   void draw_output(PGraphics pg) {

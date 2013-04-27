@@ -39,7 +39,7 @@ PGraphics proj_buffer;
 PGraphics disp_buffer;
 
 // Application application = new RootApplication();
-Application application = new Binary();
+Application application = new RootApplication();
 
 void setup() {
 
@@ -129,10 +129,14 @@ void draw() {
 }
 
 void keyPressed() {
-  if (key == 'i' || key == 'I') {
+  keyHasBeenPressed(key);
+}
+
+private void keyHasBeenPressed(Character c) {
+  if (c == 'i' || c == 'I') {
     init_on = true;
     init_count = 0;
-  } else if (key == 'u' || key == 'U') {
+  } else if (c == 'u' || c == 'U') {
     trans_debug = !trans_debug;
   }
 }
@@ -155,5 +159,9 @@ private class DispApplet extends PApplet {
     disp_buffer.endDraw();
 
     image(disp_buffer, 0, 0);
+  }
+
+  void keyPressed() {
+    keyHasBeenPressed(key);
   }
 }

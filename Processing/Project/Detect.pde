@@ -37,30 +37,28 @@ class Detect {
 		TagLibrary tags = new TagLibrary();
 		try {
 			nya.detect(cam_image);
+
+			for (int i = 0; i < num_markers; i++) {
+				if (!nya.isExistMarker(i) || nya.getConfidence(i) < 0.5) { continue; } // Continue if marker does not exist
+
+				PVector[] pos2d = nya.getMarkerVertex2D(i);
+
+				int num_tags = pos2d.length / NUM_CORNERS;
+
+				for (int j = 0; j < num_tags; j++) {
+					PVector[] corners = new PVector[4];
+					for (int k = 0; k < NUM_CORNERS; k++) {
+						corners[k] = pos2d[j * NUM_CORNERS + k];
+						assert(corners[j] != null);
+					}
+					tags.addTag(new Tag(i, corners));
+				}
+			}
 		} catch (Exception e) {
 			System.out.println("We caught the exception.  Yay!");
+		} finally {
 			return tags;
 		}
-
-		for (int i = 0; i < num_markers; i++) {
-			if (!nya.isExistMarker(i) || nya.getConfidence(i) < 0.5) { continue; } // Continue if marker does not exist
-
-			PVector[] pos2d = nya.getMarkerVertex2D(i);
-
-			int num_tags = pos2d.length / NUM_CORNERS;
-
-			// println("NUM TAGS : " + num_tags);
-
-			for (int j = 0; j < num_tags; j++) {
-				PVector[] corners = new PVector[4];
-				for (int k = 0; k < NUM_CORNERS; k++) {
-					corners[k] = pos2d[j * NUM_CORNERS + k];
-					assert(corners[j] != null);
-				}
-				tags.addTag(new Tag(i, corners));
-			}
-		}
-		return tags;
 	}
 
 	// this function loads .patt filenames into a list of Strings based on a full path to a directory (relies on java.io)

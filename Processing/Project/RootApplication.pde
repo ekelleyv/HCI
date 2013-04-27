@@ -8,8 +8,8 @@ public class RootApplication implements Application {
 		this.w = w;
 		this.h = h;
 
-		applications.put(0, new TOYProgram());
-		applications.put(1, new Binary());
+		applications.put(18, new TOYProgram());
+		applications.put(20, new Binary());
 
 		for (Application a : applications.values()) {
 			a.init(w, h);
@@ -31,7 +31,8 @@ public class RootApplication implements Application {
 		}
 
 		if (a == null) {
-			System.out.println("No application tag detected.");
+			// System.out.println("No application tag detected.");
+			return;
 		}
 
 		a.update(tl, pg);
