@@ -104,6 +104,7 @@ public class TOYProgram implements Application {
               isRunning = true;
               last_time = System.currentTimeMillis();
               Compile();
+              eip = 0;
               if (eip < this.total_length) {
                 step();
               }
@@ -145,7 +146,9 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         movNumber = registers[3];
       } else {
-        println("Error with second tag on line: " + eip);
+        int row = eip;
+        String error = "Second tag must be a register";
+        int ERRORAPI;
       }
       if (arg2.equals("A")) {
         registers[0] = movNumber;
@@ -156,7 +159,9 @@ public class TOYProgram implements Application {
       } else if (arg2.equals("D")) {
         registers[3] = movNumber;
       } else {
-        println("Error with third tag on line: " + eip);
+        int row = eip;
+        String error = "Third tag must be a register";
+        int ERRORAPI;
       }
       eip++;
     }
@@ -173,7 +178,9 @@ public class TOYProgram implements Application {
       } else if (isInteger(arg1)) {
         assembly.add_output(Integer.parseInt(arg1));        
       } else {
-        println("Error with second tag on line: " + eip);
+        int row = eip;
+        String error = "Second tag must either be a register or an integer literal";
+        int ERRORAPI;
       }
       eip++;
     }
@@ -191,7 +198,9 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         addNumber = registers[3];
       } else {
-        println("Error with second tag on line: " + eip);
+        int row = eip;
+        String error = "Second tag must be either a register or an integer literal";
+        int ERRORAPI;
       }
       if (arg2.equals("A")) {
         registers[0] += addNumber;
@@ -202,7 +211,9 @@ public class TOYProgram implements Application {
       } else if (arg2.equals("D")) {
         registers[3] += addNumber;
       } else {
-        println("Error with third tag on line: " + eip);
+        int row = eip;
+        String error = "Third tag must be a register";
+        int ERRORAPI;
       }
       eip++;
     }
@@ -220,7 +231,9 @@ public class TOYProgram implements Application {
       } else if (arg1.equals("D")) {
         subNumber = registers[3];
       } else {
-        println("Error with second tag on line: " + eip);
+        int row = eip;
+        String error = "Second tag must be either a register or integer literal";
+        int ERRORAPI;
       }
       if (arg2.equals("A")) {
         registers[0] -= subNumber;
@@ -231,7 +244,9 @@ public class TOYProgram implements Application {
       } else if (arg2.equals("D")) {
         registers[3] -= subNumber;
       } else {
-        println("Error with third tag on line: " + eip);
+        int row = eip;
+        String error = "Third tag must be a register";
+        int ERRORAPI;
       }
       eip++;
     }
@@ -248,12 +263,17 @@ public class TOYProgram implements Application {
         registerValue = registers[3];
       else if (isInteger(arg1))
          registerValue = Integer.parseInt(arg1);
-      else 
-        println("Error with  second tag on line: " + eip);
+      else {
+        int row = eip;
+        String error = "Second tag must be either a register or an integer literal";
+        int ERRORAPI;
+      }
       if (registerValue != 0) {
         Integer new_eip = jumps.get(arg2);
         if (new_eip == null) {
-          println("Label not recognized");
+          int row = eip;
+          String error = "Label not recognized";
+          int ERRORAPI;
         }
         eip = new_eip + 1;
       }
@@ -264,43 +284,63 @@ public class TOYProgram implements Application {
     
     private void labelCommand(String arg1) {
       jumps.put(arg1, eip);
-      eip++;
     }
     
     public void Compile() {
       for (TagRow line : commands) {
         String command = MapId(line.get(0).id);
         if (command.equals("MOV")) {
-          if (line.size() != 3)
-            println("Error with number of arguments on line: " + eip);
+          if (line.size() != 3) {
+            int row = eip;
+            String error = "MOV takes 2 arguments";
+            int ERRORAPI;
+          }
         }
         else if (command.equals("PRINT")) {
-          if (line.size() != 2)
-            println("Error with number of arguments for print");
+          if (line.size() != 2) {
+            int row = eip;
+            String error = "PRINT takes 1 argument";
+            int ERRORAPI;
+          }
         }
         else if (command.equals("ADD")) {
-          if (line.size() != 3)
-            println("Error with number of arguments on line: " + eip);
+          if (line.size() != 3) {
+            int row = eip;
+            String error = "ADD takes 2 arguments";
+            int ERRORAPI;
+          }
         }
         else if (command.equals("SUB")) {
-          if (line.size() != 3)
-            println("Error with number of arguments on line: " + eip);
+          if (line.size() != 3) {
+            int row = eip;
+            String error = "SUB takes 2 arguments";
+            int ERRORAPI;
+          }
         }
         else if (command.equals("JNZ")) {
-          if (line.size() != 3)
-            println("Error with number of arguments on line: " + eip);
-        }
+          if (line.size() != 3) {
+            int row = eip;
+            String error = "JNZ takes 2 arguments";
+            int ERRORAPI;
+          }
+        }  
         else if (command.equals("LABEL")) {
-          if (line.size() != 2)
-            println("Error with number of arguments on line: " + eip);
+          if (line.size() != 2) {
+            int row = eip;
+            String error = "LABEL takes 1 argument";
+            int ERRORAPI;
+          }
           labelCommand(MapId(line.get(1).id));
         }
         else if (command.equals("RUN") || command.equals("ASSEMBLY")) {
            // ignore these tagRows 
         }
         else {
-          println("Command not found: " + command);
+          int row = eip;
+          String error = command + " - command not known";
+          int ERRORAPI;
         }
+        eip++;
       }
     }
     
@@ -327,9 +367,6 @@ public class TOYProgram implements Application {
       }
       else if (command.equals("RUN") || command.equals("ASSEMBLY")) {
          // ignore these tagRows 
-      }
-      else {
-        println("Command not found: " + command);
       }
     }
 }

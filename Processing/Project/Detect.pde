@@ -39,6 +39,7 @@ class Detect {
 			nya.detect(cam_image);
 		} catch (Exception e) {
 			System.out.println("We caught the exception.  Yay!");
+			return tags;
 		}
 
 		for (int i = 0; i < num_markers; i++) {
