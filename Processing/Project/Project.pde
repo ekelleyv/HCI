@@ -39,7 +39,7 @@ PGraphics proj_buffer;
 PGraphics disp_buffer;
 
 // Application application = new RootApplication();
-Application application = new TOYProgram();
+Application application = new Binary();
 
 void setup() {
 

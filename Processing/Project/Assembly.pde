@@ -6,7 +6,7 @@ class Assembly {
   int regD;
   int im_width;
   int im_height;
-  int[] output;
+  String[] output;
   int output_count;
 
   Assembly (int im_width, int im_height) {
@@ -29,11 +29,12 @@ class Assembly {
     draw_grid(pg);
     update_reg_vals(pg, regs);
     draw_output(pg);
+    draw_error(pg);
     pg.endDraw();
     //println("Ended Assembly update");
   }
 
-  void add_output(int val) {
+  void add_output(String val) {
     if (output_count == output.length) {
       output = expand(output);
     }
@@ -95,6 +96,11 @@ class Assembly {
       pg.textSize(40);
     }
     pg.text(val, offset*width/16, 120);
+  }
+
+  void draw_error(PGraphics pg) {
+    add_output(message);
+
   }
 
   void draw_output(PGraphics pg) {

@@ -13,10 +13,10 @@ public class Binary implements Application {
 
 
     // Add the bases to the library
-    bases.put(16, 2);   // Binary
-  	bases.put(17, 8);   // Octal
-  	bases.put(18, 16);  // Hex
-  	bases.put(19, 10);  // Decimal
+    bases.put(17, 2);   // Binary
+  	bases.put(18, 8);   // Octal
+  	bases.put(19, 16);  // Hex
+  	bases.put(20, 10);  // Decimal
   }
   
   // called every time in the draw loop
