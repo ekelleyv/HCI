@@ -10,7 +10,7 @@ class Assembly {
   int output_count;
 
   Assembly (int im_width, int im_height) {
-    output = new int[10];
+    output = new String[10];
     output_count = 0;
     this.im_width = im_width;
     this.im_height = im_height;
@@ -24,12 +24,12 @@ class Assembly {
     output_count = 0;
   }
 
-  void update(PGraphics pg, int[] regs) {
+  void update(PGraphics pg, int[] regs, List<TagRow> tag_rows, int eip, boolean isRunning) {
     pg.beginDraw();
     draw_grid(pg);
     update_reg_vals(pg, regs);
     draw_output(pg);
-    draw_error(pg);
+    draw_status(pg, tag_rows, eip, isRunning);
     pg.endDraw();
     //println("Ended Assembly update");
   }
@@ -48,37 +48,37 @@ class Assembly {
     //Border
     pg.stroke(160);
     pg.strokeWeight(10);
-    pg.rect(10, 10, width-15, height-15);
+    pg.rect(10, 10, im_width-15, im_height-15);
 
     //Center Line
     pg.fill(160, 160, 160);
-    pg.line(width/2-5, 10, width/2-5, height);
+    pg.line(im_width/2-5, 10, im_width/2-5, im_height);
 
     //Code header
     pg.textSize(32);
     pg.textAlign(CENTER, CENTER);
-    pg.text("Code", width/4, 40);
+    pg.text("Code", im_width/4, 40);
 
     //Memory/Output Line
-    pg.line(width/2, height/4, width, height/4);
+    pg.line(im_width/2, im_height/4, im_width, im_height/4);
 
-    pg.text("Output", 3*width/4, height/4 + 40);
+    pg.text("Output", 3*im_width/4, im_height/4 + 40);
 
-    pg.fill(217, 105, 0);
-    pg.rect(width/2, 10, width/8-9, height/4-10);
-    pg.fill(255, 187, 0);
-    pg.rect(5*width/8, 10, width/8-9, height/4-10);
-    pg.fill(217, 102, 111);
-    pg.rect(6*width/8, 10, width/8-9, height/4-10);
-    pg.fill(4, 117, 100);
-    pg.rect(7*width/8, 10, width/8-9, height/4-10);
+    pg.fill(21, 60, 214);
+    pg.rect(im_width/2, 10, im_width/8-9, im_height/4-10);
+    pg.fill(201, 18, 0);
+    pg.rect(5*im_width/8, 10, im_width/8-9, im_height/4-10);
+    pg.fill(254, 200, 111);
+    pg.rect(6*im_width/8, 10, im_width/8-9, im_height/4-10);
+    pg.fill(37, 159, 100);
+    pg.rect(7*im_width/8, 10, im_width/8-9, im_height/4-10);
 
 
     pg.fill(255);
-    pg.text("A", 9*width/16, 40);
-    pg.text("B", 11*width/16, 40);
-    pg.text("C", 13*width/16, 40);
-    pg.text("D", 15*width/16, 40);
+    pg.text("A", 9*im_width/16, 40);
+    pg.text("B", 11*im_width/16, 40);
+    pg.text("C", 13*im_width/16, 40);
+    pg.text("D", 15*im_width/16, 40);
   }
 
   void update_reg_vals(PGraphics pg, int[] regs) {
@@ -95,12 +95,31 @@ class Assembly {
     if (val > 1000) {
       pg.textSize(40);
     }
-    pg.text(val, offset*width/16, 120);
+    pg.text(val, offset*im_width/16, 120);
   }
 
-  void draw_error(PGraphics pg) {
-    add_output(message);
+  void draw_status(PGraphics pg, List<TagRow> tag_rows, int eip, boolean isRunning) {
+    TagRow row = tag_rows.get(eip);
+    double minX = row.getMinX()-100;
+    double minY = row.getMinY();
+    double rowHeight = row.Height();
+    double midY = minY + rowHeight / 2.0;
 
+    int size = 20;
+
+    int textX = im_width/2 - 70;
+    int textY = im_height - 90;
+    
+    if (isRunning) {
+      pg.fill(255);
+    pg.triangle((float) minX - size, (float) midY - size/2, (float) minX, (float) midY, (float) minX - size, (float) midY+size/2);
+      pg.fill(160, 160, 160);
+      pg.text("Running!", textX, textY);
+    }
+    else {
+      pg.fill(160, 160, 160);
+      pg.text("Waiting...", textX, textY);
+    }
   }
 
   void draw_output(PGraphics pg) {
@@ -111,7 +130,7 @@ class Assembly {
       output_start = 0;
     }
     for (int i = output_start; i < output_count; i++) {
-      pg.text(output[i], width/2+80, height/4+80 + (i-output_start)*32);
+      pg.text(output[i], im_width/2+80, im_height/4+80 + (i-output_start)*32);
     }
   }
 
