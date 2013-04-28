@@ -29,7 +29,7 @@ class Assembly {
     draw_grid(pg);
     update_reg_vals(pg, regs);
     draw_output(pg);
-    draw_status(pg, tag_lib, isRunning);
+    draw_status(pg, tag_rows, eip, isRunning);
     pg.endDraw();
     //println("Ended Assembly update");
   }
@@ -100,18 +100,18 @@ class Assembly {
 
   void draw_status(PGraphics pg, List<TagRow> tag_rows, int eip, boolean isRunning) {
     TagRow row = tag_rows.get(eip);
-    int minX = row.getMinX();
-    int minY = row.getMinY();
-    int rowHeight = row.Height();
-    int midY = minY + (int)(rowHeight/2.0);
+    double minX = row.getMinX()-100;
+    double minY = row.getMinY();
+    double rowHeight = row.Height();
+    double midY = minY + rowHeight / 2.0;
 
     int size = 20;
 
     pg.fill(255);
-    pg.triangle(minX - size, midY - size/2, minX, midY, minX - size, midY-size/2);
+    pg.triangle((float) minX - size, (float) midY - size/2, (float) minX, (float) midY, (float) minX - size, (float) midY+size/2);
 
-    int textX = im_width/2 - 50;
-    int textY = im_height - 30;
+    int textX = im_width/2 - 70;
+    int textY = im_height - 60;
     pg.fill(160, 160, 160);
     if (isRunning) {
       pg.text("Running!", textX, textY);

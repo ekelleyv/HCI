@@ -39,7 +39,9 @@ class Detect {
 			nya.detect(cam_image);
 
 			for (int i = 0; i < num_markers; i++) {
-				if (!nya.isExistMarker(i) || nya.getConfidence(i) < 0.5) { continue; } // Continue if marker does not exist
+				System.out.println(nya.getConfidence(i));
+
+				if (!nya.isExistMarker(i) || nya.getConfidence(i) < 0.6) { continue; } // Continue if marker does not exist
 
 				PVector[] pos2d = nya.getMarkerVertex2D(i);
 

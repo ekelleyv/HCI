@@ -8,8 +8,8 @@ public class RootApplication implements Application {
 		this.w = w;
 		this.h = h;
 
-		applications.put(18, new TOYProgram());
-		applications.put(20, new Binary());
+		applications.put(19, new TOYProgram());
+		applications.put(0, new Binary());
 
 		for (Application a : applications.values()) {
 			a.init(w, h);
