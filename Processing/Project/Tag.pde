@@ -16,7 +16,9 @@ public class Tag implements Comparable<Tag> {
 	private double minX = Double.POSITIVE_INFINITY;
 	private double minY = Double.POSITIVE_INFINITY;
 
-	Tag(int id, PVector[] cam_corners) {
+	private double confidence;
+
+	Tag(int id, PVector[] cam_corners, double confidence) {
 		assert(cam_corners != null);
 		assert(cam_corners.length == NUM_CORNERS);
 
@@ -27,6 +29,8 @@ public class Tag implements Comparable<Tag> {
 		for (int i = 0; i < NUM_CORNERS; i++) {
 			cam_corners[i].z = 1.0;
 		}
+
+		this.confidence = confidence;
 	}
 
 	private PVector getCenter(PVector[] corners) {
@@ -44,6 +48,8 @@ public class Tag implements Comparable<Tag> {
 	public double getMaxY() { return maxY; }
 	public double getMinX() { return minX; }
 	public double getMinY() { return minY; }
+
+	public double getConfidence() { return confidence; }
 
 	public void setProjectorCorners(PVector[] corners) {
 		assert(corners != null);
@@ -129,7 +135,7 @@ public class Tag implements Comparable<Tag> {
 
 		pg.fill(255);
 		pg.textSize(32);
-		pg.text(id, c[0].x + 50, c[0].y - 20);
+		pg.text(id + " - " + String.format("%.2f", confidence), c[0].x + 60, c[0].y - 40);
 	}
 
 	public int compareTo(Tag that) {

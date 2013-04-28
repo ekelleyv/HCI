@@ -41,8 +41,6 @@ class Detect {
 			for (int i = 0; i < num_markers; i++) {
 				if (!nya.isExistMarker(i) || nya.getConfidence(i) < confidence) { continue; } // Continue if marker does not exist
 
-				System.out.println(nya.getConfidence(i));
-
 				PVector[] pos2d = nya.getMarkerVertex2D(i);
 
 				int num_tags = pos2d.length / NUM_CORNERS;
@@ -53,7 +51,7 @@ class Detect {
 						corners[k] = pos2d[j * NUM_CORNERS + k];
 						assert(corners[j] != null);
 					}
-					tags.addTag(new Tag(i, corners));
+					tags.addTag(new Tag(i, corners, nya.getConfidence(i)));
 				}
 			}
 		} catch (Exception e) {
