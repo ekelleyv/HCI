@@ -8,8 +8,8 @@ public class RootApplication implements Application {
 		this.w = w;
 		this.h = h;
 
-		applications.put(19, new TOYProgram());
-		applications.put(0, new Binary());
+		applications.put(1023, new TOYProgram());
+		applications.put(1024, new Binary());
 
 		for (Application a : applications.values()) {
 			a.init(w, h);
@@ -36,6 +36,14 @@ public class RootApplication implements Application {
 		}
 
 		a.update(tl, pg);
+		/*
+		try {
+			a.update(tl, pg);
+		} catch(Exception e) {
+			System.out.println("Application threw and Exception.");
+			e.printStackTrace();
+		}
+		*/
 	}
 	
 }

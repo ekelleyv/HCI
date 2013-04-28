@@ -31,7 +31,7 @@ class Detect {
 		}
 	}
 
-	TagLibrary detect_tags(PImage cam_image) {
+	TagLibrary detect_tags(PImage cam_image, double confidence) {
 		assert(cam_image != null);
 
 		TagLibrary tags = new TagLibrary();
@@ -39,9 +39,9 @@ class Detect {
 			nya.detect(cam_image);
 
 			for (int i = 0; i < num_markers; i++) {
-				System.out.println(nya.getConfidence(i));
+				if (!nya.isExistMarker(i) || nya.getConfidence(i) < confidence) { continue; } // Continue if marker does not exist
 
-				if (!nya.isExistMarker(i) || nya.getConfidence(i) < 0.6) { continue; } // Continue if marker does not exist
+				System.out.println(nya.getConfidence(i));
 
 				PVector[] pos2d = nya.getMarkerVertex2D(i);
 

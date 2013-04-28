@@ -29,7 +29,7 @@ class Assembly {
     draw_grid(pg);
     update_reg_vals(pg, regs);
     draw_output(pg);
-    draw_status(pg, tag_rows, eip, isRunning);
+    if (tag_rows.size() > 0) draw_status(pg, tag_rows, eip, isRunning);
     pg.endDraw();
     //println("Ended Assembly update");
   }

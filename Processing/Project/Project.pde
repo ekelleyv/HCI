@@ -33,13 +33,15 @@ int init_length = 30;
 
 boolean trans_debug = false;
 
+double confidence = 0.6;
+
 DispApplet disp_applet;
 PFrame disp_frame;
 PGraphics proj_buffer;
 PGraphics disp_buffer;
 
 // Application application = new RootApplication();
-Application application = new RootApplication();
+Application application = new TOYProgram();
 
 void setup() {
 
@@ -99,7 +101,7 @@ void draw() {
     // Tag detection and update buffer
     if (cam.available() == true) {
       cam.read();
-      tags = ar_detect.detect_tags(cam);
+      tags = ar_detect.detect_tags(cam, confidence);
     }
 
     if (init_on) {
@@ -129,15 +131,25 @@ void draw() {
 }
 
 void keyPressed() {
-  keyHasBeenPressed(key);
+  keyHasBeenPressed(key, keyCode);
 }
 
-private void keyHasBeenPressed(Character c) {
+private void keyHasBeenPressed(char c, int code) {
   if (c == 'i' || c == 'I') {
     init_on = true;
     init_count = 0;
   } else if (c == 'u' || c == 'U') {
     trans_debug = !trans_debug;
+  } else if (c == CODED) {
+    if (code == UP) {
+      confidence += 0.05;
+      if (confidence > 1) confidence = 1;
+      System.out.println("Confidence is " + confidence);
+    } else if (code == DOWN) {
+      confidence -= 0.05;
+      if (confidence < 0) confidence = 0;
+      System.out.println("Confidence is " + confidence);
+    }
   }
 }
 
@@ -162,6 +174,6 @@ private class DispApplet extends PApplet {
   }
 
   void keyPressed() {
-    keyHasBeenPressed(key);
+    keyHasBeenPressed(key, keyCode);
   }
 }
