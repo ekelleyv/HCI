@@ -41,7 +41,7 @@ PGraphics proj_buffer;
 PGraphics disp_buffer;
 
 // Application application = new RootApplication();
-Application application = new TOYProgram();
+Application application = new RootApplication();
 
 void setup() {
 
@@ -79,7 +79,7 @@ void setup() {
   // Setting Up Detect Object
   println("Setting Up Detect");
   camPara = sketchPath("../libraries/nyar4psg/data/camera_para.dat");
-  patternPath = sketchPath("../libraries/nyar4psg/patternMaker/examples/ARToolKit_Patterns");
+  patternPath = sketchPath("../libraries/nyar4psg/patternMaker/examples/patt");
   ar_detect = new Detect(this, cam_width, cam_height, camPara, patternPath);
   
   application.init(proj_width, proj_height);

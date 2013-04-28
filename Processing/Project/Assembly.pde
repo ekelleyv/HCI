@@ -99,6 +99,7 @@ class Assembly {
   }
 
   void draw_status(PGraphics pg, List<TagRow> tag_rows, int eip, boolean isRunning) {
+    if (eip > tag_rows.size()) eip = 0;
     TagRow row = tag_rows.get(eip);
     double minX = row.getMinX()-100;
     double minY = row.getMinY();
@@ -107,7 +108,7 @@ class Assembly {
 
     int size = 20;
 
-    int textX = im_width/2 - 70;
+    int textX = im_width / 2 - 70;
     int textY = im_height - 90;
     
     if (isRunning) {

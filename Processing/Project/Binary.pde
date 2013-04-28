@@ -8,15 +8,17 @@ public class Binary implements Application {
   public void init(int im_width, int im_height) {
   	// Add the numbers to the library
   	for (int i = 0; i < 16; i++) {
-      numbers.put(i, Integer.toString(i, 16).toUpperCase());
+      for (int j = 0; j < 6; j++) {
+        numbers.put(i * 6 + j, Integer.toString(i, 16).toUpperCase());
+      }
     }
 
 
     // Add the bases to the library
-    bases.put(17, 2);   // Binary
-  	bases.put(18, 8);   // Octal
-  	bases.put(19, 16);  // Hex
-  	bases.put(20, 10);  // Decimal
+    bases.put(134, 2);   // Binary
+  	bases.put(135, 8);   // Octal
+  	bases.put(136, 16);  // Hex
+  	bases.put(137, 10);  // Decimal
   }
   
   // called every time in the draw loop

@@ -115,7 +115,7 @@ public class TOYProgram implements Application {
     
     // called every time in the draw loop
     public void update(TagLibrary newCommands, PGraphics pg) {
-        List<Tag> stillRunning = newCommands.getTags(23);
+        List<Tag> stillRunning = newCommands.getTags(132);
         if (stillRunning == null) {
           isRunning = false;
           assembly.clear_output();
@@ -138,7 +138,7 @@ public class TOYProgram implements Application {
            this.total_length = commands.size() - 1;
            eip = 0;
            // see if run tag
-           List<Tag> run = newCommands.getTags(23);
+           List<Tag> run = newCommands.getTags(132);
            
            if (run != null) {
               isRunning = true;

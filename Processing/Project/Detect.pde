@@ -5,8 +5,8 @@ class Detect {
 	MultiMarker nya;
 	int cam_width;
 	int cam_height;
-	int num_markers = 40; //Update to how many markers we use
 	String cam_param;
+	int num_markers = 138;
 	String pattern_filepath;
 	String[] patterns;
 
@@ -26,7 +26,9 @@ class Detect {
 		nya.setLostDelay(1);
 		String[] patterns = loadPatternFilenames(pattern_filepath);
 
-		for (int i=0; i<num_markers; i++) {
+		num_markers = patterns.length;
+
+		for (int i = 0; i < patterns.length; i++) {
 			nya.addARMarker(patternPath + "/" + patterns[i], 80);
 		}
 	}
