@@ -29,6 +29,7 @@ import java.io.*;
 public class TOYProgram implements Application {
     private int[] registers;
     private List<TagRow> commands;
+    private List<TagRow> commandsForAssembly;
     private Hashtable<String, Integer> jumps;
     private boolean isRunning;
     private int eip;
@@ -95,6 +96,11 @@ public class TOYProgram implements Application {
 
         if (!isRunning) {
            commands = newCommands.getTagRows();
+           for (TagRow line : commands) {
+             if (!(MapId(line.get(0).id).equals("RUN") || MapId(line.get(0).id).equals("ASSEMBLY"))) {
+                 commandsForAssembly.add(line);
+             }
+           }
            this.total_length = commands.size() - 1;
            eip = 0;
            // see if run tag
@@ -120,7 +126,7 @@ public class TOYProgram implements Application {
            } 
         }
         // update Assembly
-        assembly.update(pg, registers, commands, eip, isRunning);
+        assembly.update(pg, registers, commandsForAssembly, eip, isRunning);
     }
     
     private boolean isInteger(String arg) {
