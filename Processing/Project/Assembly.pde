@@ -64,13 +64,13 @@ class Assembly {
 
     pg.text("Output", 3*im_width/4, im_height/4 + 40);
 
-    pg.fill(217, 105, 0);
+    pg.fill(21, 60, 214);
     pg.rect(im_width/2, 10, im_width/8-9, im_height/4-10);
-    pg.fill(255, 187, 0);
+    pg.fill(201, 18, 0);
     pg.rect(5*im_width/8, 10, im_width/8-9, im_height/4-10);
-    pg.fill(217, 102, 111);
+    pg.fill(254, 200, 111);
     pg.rect(6*im_width/8, 10, im_width/8-9, im_height/4-10);
-    pg.fill(4, 117, 100);
+    pg.fill(37, 159, 100);
     pg.rect(7*im_width/8, 10, im_width/8-9, im_height/4-10);
 
 
@@ -107,16 +107,17 @@ class Assembly {
 
     int size = 20;
 
-    pg.fill(255);
-    pg.triangle((float) minX - size, (float) midY - size/2, (float) minX, (float) midY, (float) minX - size, (float) midY+size/2);
-
     int textX = im_width/2 - 70;
-    int textY = im_height - 60;
-    pg.fill(160, 160, 160);
+    int textY = im_height - 90;
+    
     if (isRunning) {
+      pg.fill(255);
+    pg.triangle((float) minX - size, (float) midY - size/2, (float) minX, (float) midY, (float) minX - size, (float) midY+size/2);
+      pg.fill(160, 160, 160);
       pg.text("Running!", textX, textY);
     }
     else {
+      pg.fill(160, 160, 160);
       pg.text("Waiting...", textX, textY);
     }
   }
