@@ -99,7 +99,7 @@ class Assembly {
   }
 
   void draw_status(PGraphics pg, List<TagRow> tag_rows, int eip, boolean isRunning) {
-    if (eip > tag_rows.size()) eip = 0;
+    if (eip >= tag_rows.size()) return;
     TagRow row = tag_rows.get(eip);
     double minX = row.getMinX()-100;
     double minY = row.getMinY();
