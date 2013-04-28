@@ -38,32 +38,62 @@ public class TOYProgram implements Application {
     private int total_length;
 
     private String MapId(int id) {
-       if (id < 16)
-         return ((Integer) id).toString();
-       else if (id == 16)
+       if (id < 6) 
          return "0";
-       else if (id == 17)
+       else if (id < 12)
+         return "1";
+       else if (id < 18)
+         return "2";
+       else if (id < 24)
+         return "3";
+       else if (id < 30)
+         return "4";
+       else if (id < 36)
+         return "5";
+       else if (id < 42)
+         return "6";
+       else if (id < 48)
+         return "7";
+       else if (id < 54)
+         return "8";
+       else if (id < 60)
+         return "9";
+       else if (id < 66)
+         return "A";
+       else if (id < 72)
+         return "B";
+       else if (id < 78)
+         return "C";
+       else if (id < 84)
+         return "D";
+       else if (id < 90)
+         return "E";
+       else if (id < 96)
+         return "F";
+       else if (id < 102)
          return "MOV";
-       else if (id == 18)
+       else if (id < 108)
          return "PRINT";
-       else if (id == 19)
+       else if (id < 114)
          return "LABEL";
-       else if (id == 20)
+       else if (id < 120)
          return "JNZ";
-       else if (id == 21)
+       else if (id < 126)
          return "ADD";
-       else if (id == 22)
+       else if (id < 132)
          return "SUB";
-       else if (id == 23)
+       else if (id < 133)
          return "RUN";
-       else if (id == 24)
-         return "BINARY";
-       else if (id == 25)
+       else if (id < 134)
          return "ASSEMBLY";
-       else {
-         Integer ret = id - 26;
-         return ret.toString();
-       }  
+       else if (id < 135)
+         return "BINARY";
+       else if (id < 136)
+         return "OCTAL";
+       else if (id < 137)
+         return "HEX";
+       else
+         return "DECIMAL";
     }
     
     public TOYProgram() {
@@ -80,6 +110,7 @@ public class TOYProgram implements Application {
       this.eip = 0;
       this.assembly = new Assembly(im_width, im_height);
       this.total_length = 0;
+      this.commandsForAssembly = new ArrayList<TagRow>();
     }
     
     // called every time in the draw loop
@@ -92,9 +123,12 @@ public class TOYProgram implements Application {
             commands.clear();
           if (jumps != null)
             jumps.clear();
+          if (commandsForAssembly != null)
+            commandsForAssembly.clear(); 
         }
 
         if (!isRunning) {
+           commandsForAssembly = new ArrayList<TagRow>();
            commands = newCommands.getTagRows();
            for (TagRow line : commands) {
              if (!(MapId(line.get(0).id).equals("RUN") || MapId(line.get(0).id).equals("ASSEMBLY"))) {
