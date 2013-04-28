@@ -144,11 +144,9 @@ private void keyHasBeenPressed(char c, int code) {
     if (code == UP) {
       confidence += 0.05;
       if (confidence > 1) confidence = 1;
-      System.out.println("Confidence is " + confidence);
     } else if (code == DOWN) {
       confidence -= 0.05;
       if (confidence < 0) confidence = 0;
-      System.out.println("Confidence is " + confidence);
     }
   }
 }
@@ -168,6 +166,8 @@ private class DispApplet extends PApplet {
       disp_buffer.image(cam, 0, 0, cam_width, cam_height);
     }
     tags.drawCam(disp_buffer);
+    disp_buffer.textSize(18);
+    disp_buffer.text("Confidence Threshold - " +  String.format("%.2f", confidence), 10, 20);
     disp_buffer.endDraw();
 
     image(disp_buffer, 0, 0);
