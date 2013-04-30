@@ -33,9 +33,10 @@ public class TOYProgram implements Application {
     private Hashtable<String, Integer> jumps;
     private boolean isRunning;
     private int eip;
-    private float last_time;
+    private long last_time;
     private Assembly assembly;
     private int total_length;
+    private boolean error_glob = false;
 
     private String MapId(int id) {
        if (id < 6) 
@@ -111,6 +112,7 @@ public class TOYProgram implements Application {
       this.assembly = new Assembly(im_width, im_height);
       this.total_length = 0;
       this.commandsForAssembly = new ArrayList<TagRow>();
+      this.jumps = new Hashtable<String, Integer>();
     }
     
     // called every time in the draw loop
@@ -118,6 +120,7 @@ public class TOYProgram implements Application {
         List<Tag> stillRunning = newCommands.getTags(132);
         if (stillRunning == null) {
           isRunning = false;
+          for (int i = 0; i < registers.length; i++) registers[i] = 0;
           assembly.clear_output();
           if (commands != null)
             commands.clear();
@@ -135,7 +138,7 @@ public class TOYProgram implements Application {
                  commandsForAssembly.add(line);
              }
            }
-           this.total_length = commands.size() - 1;
+           this.total_length = commandsForAssembly.size();
            eip = 0;
            // see if run tag
            List<Tag> run = newCommands.getTags(132);
@@ -144,19 +147,14 @@ public class TOYProgram implements Application {
               isRunning = true;
               last_time = System.currentTimeMillis();
               Compile();
+              error_glob = false;
               eip = 0;
-              if (eip < this.total_length) {
-                step();
-              }
            }
-        }
-        else {
+        } else if (!error_glob) {
            // see if execute another step
-           if (System.currentTimeMillis() - last_time > 1000.0) {
+           if (System.currentTimeMillis() - last_time > 1500.0) {
               last_time = System.currentTimeMillis();
-              if (eip < this.total_length) {
-                step();
-              }                          
+              if (eip < this.total_length) step();                       
            } 
         }
         // update Assembly
@@ -189,6 +187,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Second tag must be a register";
         assembly.add_output(error);
+        error_glob = true;
       }
       if (arg2.equals("A")) {
         registers[0] = movNumber;
@@ -202,6 +201,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Third tag must be a register";
         assembly.add_output(error);
+        error_glob = true;
       }
       eip++;
     }
@@ -221,6 +221,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Second tag must either be a register or an integer literal";
         assembly.add_output(error);
+        error_glob = true;
       }
       eip++;
     }
@@ -241,6 +242,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Second tag must be either a register or an integer literal";
         assembly.add_output(error);
+        error_glob = true;
       }
       if (arg2.equals("A")) {
         registers[0] += addNumber;
@@ -254,6 +256,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Third tag must be a register";
         assembly.add_output(error);
+        error_glob = true;
       }
       eip++;
     }
@@ -274,6 +277,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Second tag must be either a register or integer literal";
         assembly.add_output(error);
+        error_glob = true;
       }
       if (arg2.equals("A")) {
         registers[0] -= subNumber;
@@ -287,6 +291,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Third tag must be a register";
         assembly.add_output(error);
+        error_glob = true;
       }
       eip++;
     }
@@ -307,6 +312,7 @@ public class TOYProgram implements Application {
         String row = Integer.toString(eip);
         String error = row + ": Second tag must be either a register or an integer literal";
         assembly.add_output(error);
+        error_glob = true;
       }
       if (registerValue != 0) {
         Integer new_eip = jumps.get(arg2);
@@ -314,6 +320,8 @@ public class TOYProgram implements Application {
           String row = Integer.toString(eip);
           String error = row + ": Label not recognized";
           assembly.add_output(error);
+          error_glob = true;
+          return;
         }
         eip = new_eip + 1;
       }
@@ -334,6 +342,7 @@ public class TOYProgram implements Application {
             String row = Integer.toString(eip);
             String error = row + ": MOV takes 2 arguments";
             assembly.add_output(error);
+            error_glob = true;
           }
         }
         else if (command.equals("PRINT")) {
@@ -341,6 +350,7 @@ public class TOYProgram implements Application {
             String row = Integer.toString(eip);
             String error = row + ": PRINT takes 1 argument";
             assembly.add_output(error);
+            error_glob = true;
           }
         }
         else if (command.equals("ADD")) {
@@ -348,6 +358,7 @@ public class TOYProgram implements Application {
             String row = Integer.toString(eip);
             String error = row + ": ADD takes 2 arguments";
             assembly.add_output(error);
+            error_glob = true;
           }
         }
         else if (command.equals("SUB")) {
@@ -355,6 +366,7 @@ public class TOYProgram implements Application {
             String row = Integer.toString(eip);
             String error = row + ": SUB takes 2 arguments";
             assembly.add_output(error);
+            error_glob = true;
           }
         }
         else if (command.equals("JNZ")) {
@@ -362,6 +374,7 @@ public class TOYProgram implements Application {
             String row = Integer.toString(eip);
             String error = row + ": JNZ takes 2 arguments";
             assembly.add_output(error);
+            error_glob = true;
           }
         }  
         else if (command.equals("LABEL")) {
@@ -369,6 +382,7 @@ public class TOYProgram implements Application {
             String row = Integer.toString(eip);
             String error = row + ": LABEL takes 1 argument";
             assembly.add_output(error);
+            error_glob = true;
           }
           labelCommand(MapId(line.get(1).id));
         }
@@ -379,6 +393,7 @@ public class TOYProgram implements Application {
           String row = Integer.toString(eip);
           String error = row + ": " + command + " - command not known";
           assembly.add_output(error);
+          error_glob = true;
         }
         eip++;
       }

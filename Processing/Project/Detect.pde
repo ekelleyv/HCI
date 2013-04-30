@@ -56,7 +56,9 @@ class Detect {
 					tags.addTag(new Tag(i, corners, nya.getConfidence(i)));
 				}
 			}
-		} catch (Exception e) {
+		} /* catch (jp.nyatla.nyartoolkit.core.NyARException nye) {
+			System.out.println("Caught the specific exception.");
+		} */ catch (Exception e) {
 			System.out.println("We caught the exception.  Yay!");
 		} finally {
 			return tags;
