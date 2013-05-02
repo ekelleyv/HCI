@@ -48,7 +48,7 @@ void setup() {
   String[] cameras = Capture.list();
   println(cameras);
 
-  if (cameras.length < 15) {
+  if (cameras.length < 16) {
     iSight = true;
   }
   else {

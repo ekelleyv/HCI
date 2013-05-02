@@ -3,6 +3,7 @@ import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 
 class Detect {
 	MultiMarker nya;
+	Project project;
 	int cam_width;
 	int cam_height;
 	String cam_param;
@@ -11,6 +12,7 @@ class Detect {
 	String[] patterns;
 
 	Detect (Project project, int cam_width, int cam_height, String cam_param, String pattern_filepath) {
+		this.project = project;
 		this.cam_width = cam_width;
 		this.cam_height = cam_height;
 		this.cam_param = cam_param;
@@ -60,6 +62,7 @@ class Detect {
 			System.out.println("Caught the specific exception.");
 		} */ catch (Exception e) {
 			System.out.println("We caught the exception.  Yay!");
+			this.nya = new MultiMarker(project, cam_width, cam_height, cam_param, NyAR4PsgConfig.CONFIG_DEFAULT);
 		} finally {
 			return tags;
 		}
