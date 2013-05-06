@@ -1,25 +1,25 @@
 class Initialize {
 	private Grid init_grid = new Grid(1, 1, 300);
-	private int init_tag = 141;
 
 	public void generate_display(PGraphics pg) {		
-		init_grid.generate_display(pg, init_tag);
+		init_grid.generate_display(pg);
 	}
 
 	private void addProjectorCorners(Tag tag) {
-		tag.setProjectorCorners(init_grid.getTagCorners());
+		tag.setProjectorCorners(init_grid.getTagCorners(tag.getId()));
 	}
 
-	public int getInitTag() { return init_tag; }
-
 	public void addProjectorCorners(TagLibrary tl) {
-		if (tl.getTags(init_tag) == null || tl.getTags(0).size() == 0) return;
-		addProjectorCorners(tl.getTags(init_tag).get(0));
-
 		/*
+		if (tl.getTags(0) != null) {
+			if (tl.getTags(0).size() > 0) {
+				addProjectorCorners(tl.getTags(0).get(0));
+			}
+		}
+		*/
+
 		for (Tag tag : tl.getTags()) {
 			addProjectorCorners(tag);
 		}
-		*/
 	}
 }

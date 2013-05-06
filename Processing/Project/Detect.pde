@@ -7,7 +7,7 @@ class Detect {
 	int cam_width;
 	int cam_height;
 	String cam_param;
-	int num_markers = 142;
+	int num_markers = 138;
 	String pattern_filepath;
 	String[] patterns;
 
