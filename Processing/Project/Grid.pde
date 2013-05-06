@@ -20,13 +20,12 @@ class Grid {
 		}
 	}
 
-	public void generate_display(PGraphics pg) {
+	public void generate_display(PGraphics pg, int id) {
 		pg.background(255);
 
-		for (int id = 0; id < ar_images.size(); id++) {
-			PVector[] corners = getTagCorners(id);
-			pg.image(ar_images.get(id), corners[0].x, corners[0].y, marker_width, marker_width);
-		}
+		PVector[] corners = getTagCorners(0);
+		String image_prefix = sketchPath("../libraries/nyar4psg/patternMaker/examples/gif/4x4_384_");
+		pg.image(loadImage(image_prefix + id + ".gif"), corners[0].x, corners[0].y, marker_width, marker_width);
 
 		/*
 		for (int i = 0; i < row; i++) {
@@ -36,6 +35,10 @@ class Grid {
 			}
 		}
 		*/
+	}
+
+	public PVector[] getTagCorners() {
+		return getTagCorners(0);
 	}
 
 	public PVector[] getTagCorners(int id) {

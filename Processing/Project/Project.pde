@@ -113,7 +113,7 @@ void draw() {
         init_count++;
       } else {
         init.addProjectorCorners(tags);
-        trans.init(tags);
+        trans.init(tags, init.getInitTag());
 
         init_count = 0;
         init_on = false;
