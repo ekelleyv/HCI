@@ -7,7 +7,7 @@ class Detect {
 	int cam_width;
 	int cam_height;
 	String cam_param;
-	int num_markers = 138;
+	int num_markers = 142;
 	String pattern_filepath;
 	String[] patterns;
 
@@ -58,12 +58,12 @@ class Detect {
 					tags.addTag(new Tag(i, corners, nya.getConfidence(i)));
 				}
 			}
-		} /* catch (jp.nyatla.nyartoolkit.core.NyARException nye) {
-			System.out.println("Caught the specific exception.");
-		} */ catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("We caught the exception.  Yay!");
 			this.nya = new MultiMarker(project, cam_width, cam_height, cam_param, NyAR4PsgConfig.CONFIG_DEFAULT);
+			System.out.println("Caught.");
 		} finally {
+			System.out.println("Finally.");
 			return tags;
 		}
 	}
@@ -71,11 +71,13 @@ class Detect {
 	// this function loads .patt filenames into a list of Strings based on a full path to a directory (relies on java.io)
 	String[] loadPatternFilenames(String path) {
 		File folder = new File(path);
+		
 		FilenameFilter pattFilter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".patt");
 			}
 		};
+
 		return folder.list(pattFilter);
 	}
 }
