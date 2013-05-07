@@ -31,7 +31,7 @@ class Assembly {
     draw_output(pg);
     if (tag_rows.size() > 0) draw_status(pg, tag_rows, eip, isRunning);
     pg.endDraw();
-    //println("Ended Assembly update");
+    // println("Ended Assembly update");
   }
 
   void add_output(String val) {

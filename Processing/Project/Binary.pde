@@ -24,7 +24,7 @@ public class Binary implements Application {
   // called every time in the draw loop
   public void update(TagLibrary tl, PGraphics pg) {
     try {
-  	pg.background(0);
+  	pg.background(0, 0, 128);
 
     List<TagRow> rows = tl.getTagRows();
 
@@ -33,7 +33,7 @@ public class Binary implements Application {
     for (TagRow row : rows) {
     	if (row.size() > 1) {
       	if (longRow != null) {
-      		// System.out.println("Multiple Long Rows");
+      		System.out.println("Multiple Long Rows");
       		return;
       	} else {
       		longRow = row;
@@ -41,7 +41,7 @@ public class Binary implements Application {
       }
     }
     if (longRow == null) {
-      // System.out.println("There is no long row");
+      System.out.println("There is no long row");
       return;
     }
 
@@ -58,7 +58,7 @@ public class Binary implements Application {
     for (int i = 1; i < longRow.size(); i++) {
     	Tag tag = longRow.get(i);
     	if (!isNumber(tag)) {
-    		// System.out.println("Row contains non-number values");
+        System.out.println("Row contains non-number values");
     		return;
      	} else {
       	input += number(tag);
@@ -74,8 +74,8 @@ public class Binary implements Application {
     	if (row.size() == 1) {
     		int oBase;
     		if (!isBase(row.get(0))) {
-    			// System.out.println("First tag in row not a base tag");
-    			return;
+    			System.out.println("First tag in row not a base tag");
+    			continue;
     		} else {
     			oBase = base(row.get(0));
     		}
@@ -87,7 +87,7 @@ public class Binary implements Application {
     	}
     }
     } catch(Exception e) {
-      // System.out.println("Why error!!!");
+      System.out.println("Why error!!!");
       return;
     }
   }
@@ -109,9 +109,9 @@ public class Binary implements Application {
   }
 
   private void printOutput(TagRow row, String output, PGraphics pg) {
-    pg.fill(255);
+    pg.fill(255, 255, 0);
     // pg.noStroke();
-    pg.textSize(128);
-    pg.text(output, (float) row.getMinX() + 400, (float) row.getMaxY());
+    pg.textSize(64);
+    pg.text(output, (float) row.getMinX() + 200, (float) row.getMaxY());
   }
 }
