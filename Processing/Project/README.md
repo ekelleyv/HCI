@@ -1,9 +1,10 @@
-The following is a description of all the compenents of our system.
+Code Structure and Description
+==============================
 
-Project.pde
-	-The main class called by Processing. 
-	-Instantiates two windows, one for the projector and one for debugging on the monitor. 
-	-Handles the keypress events for initializing and displaying debugging information.
+* Project.pde
+	*The main class called by Processing. 
+	*Instantiates two windows, one for the projector and one for debugging on the monitor. 
+	*Handles the keypress events for initializing and displaying debugging information.
 
 Detect.pde
 	-Interfaces with the ARToolKit library to detect the tags from the video feed.
