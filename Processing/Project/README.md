@@ -2,7 +2,7 @@ Code Structure and Description
 ------------------------------
 
 * Project.pde
-	** The main class called by Processing. 
+	* The main class called by Processing. 
 	** Instantiates two windows, one for the projector and one for debugging on the monitor. 
 	** Handles the keypress events for initializing and displaying debugging information.
 
