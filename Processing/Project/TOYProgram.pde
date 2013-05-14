@@ -31,7 +31,8 @@ public class TOYProgram implements Application {
     private List<TagRow> commands;
     private List<TagRow> commandsForAssembly;
     private Hashtable<String, Integer> jumps;
-    private boolean isRunning;
+    private boolean isRunning = false;
+    private boolean compiled = false;
     private int eip;
     private long last_time;
     private Assembly assembly;
@@ -99,6 +100,8 @@ public class TOYProgram implements Application {
     
     public TOYProgram() {
       this.registers = new int[4];
+      this.isRunning = false;
+      this.compiled = false;
     }
     
     public void init(int im_width, int im_height) {
@@ -107,6 +110,7 @@ public class TOYProgram implements Application {
         registers[i] = 0;
       }
       this.isRunning = false;
+      this.compiled = false;
       this.last_time = System.currentTimeMillis();
       this.eip = 0;
       this.assembly = new Assembly(im_width, im_height);
@@ -119,6 +123,7 @@ public class TOYProgram implements Application {
     public void update(TagLibrary newCommands, PGraphics pg) {
         List<Tag> stillRunning = newCommands.getTags(132);
         if (stillRunning == null) {
+          compiled = false;
           isRunning = false;
           for (int i = 0; i < registers.length; i++) registers[i] = 0;
           assembly.clear_output();
@@ -144,13 +149,18 @@ public class TOYProgram implements Application {
            List<Tag> run = newCommands.getTags(132);
            
            if (run != null) {
-              isRunning = true;
               last_time = System.currentTimeMillis();
               Compile();
+              compiled = true;
               error_glob = false;
               eip = 0;
+              isRunning = true;
            }
         } else if (!error_glob) {
+           if (!compiled) {
+              Compile();
+              compiled = true;
+           }
            // see if execute another step
            if (System.currentTimeMillis() - last_time > 1500.0) {
               last_time = System.currentTimeMillis();
@@ -418,7 +428,8 @@ public class TOYProgram implements Application {
         jnzCommand(MapId(line.get(1).id), MapId(line.get(2).id));
       }
       else if (command.equals("LABEL")) {
-        // ignore label
+        // ignore label and increase eip
+        eip++;
       }
       else if (command.equals("RUN") || command.equals("ASSEMBLY")) {
          // ignore these tagRows 

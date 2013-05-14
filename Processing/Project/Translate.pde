@@ -3,25 +3,26 @@ import jp.nyatla.nyar4psg.*; // the NyARToolkit Processing library
 
 class Translate {
 	private Homography h = new Homography();
+	private final int INIT_TAG_ID = 140;
 
 	public void init(TagLibrary tl) {
-		if (tl.numTags() == 0) {
-			System.out.println("No tags detected in initialization.");
+		List<Tag> init_tags = tl.getTags(INIT_TAG_ID);
+
+		if (init_tags == null || init_tags.size() < 1) {
+			System.out.println("Translate: Initialization tag not found.");
 			return;
 		}
 
+		Tag tag = init_tags.get(0);
+
 		this.h = new Homography();
 		
-		PVector[] cam = new PVector[tl.numTags() * NUM_CORNERS];
-		PVector[] proj = new PVector[tl.numTags() * NUM_CORNERS];
+		PVector[] cam = new PVector[NUM_CORNERS];
+		PVector[] proj = new PVector[NUM_CORNERS];
 
-		int i = 0;
-		for (Tag tag : tl.getTags()) {
-			for (int j = 0; j < NUM_CORNERS; j++) {
-				cam[i] = tag.getCamCorners()[j];
-				proj[i] = tag.getProjectorCorners()[j];
-				i++;
-			}
+		for (int i = 0; i < NUM_CORNERS; i++) {
+			cam[i] = tag.getCamCorners()[i];
+			proj[i] = tag.getProjectorCorners()[i];
 		}
 
 		// Uncomment for println debugging

@@ -40,31 +40,11 @@ PFrame disp_frame;
 PGraphics proj_buffer;
 PGraphics disp_buffer;
 
-// Application application = new RootApplication();
+String[] cameras;
+
 Application application = new RootApplication();
 
 void setup() {
-
-  String[] cameras = Capture.list();
-  println(cameras);
-
-  if (cameras.length < 16) {
-    iSight = true;
-  }
-  else {
-    iSight = false;
-  }
-
-  if (iSight) {
-    cam_width = 640;
-    cam_height = 480;
-    cam_number = 0;
-  } else {
-    cam_width = 1280;
-    cam_height = 960;
-    cam_number = 15;
-  }
-
   //Create display
   println("Setting Up Projector Display");
   size(proj_width, proj_height);
@@ -73,8 +53,7 @@ void setup() {
 
   // Create camera object
   println("Setting Up Camera");
-  cam = new Capture(this, cameras[cam_number]);
-  cam.start();
+  initCamera();
 
   // Setting Up Detect Object
   println("Setting Up Detect");
@@ -97,11 +76,39 @@ void setup() {
   disp_frame.setTitle("Display");
 }
 
+void initCamera() {
+  cameras = Capture.list();
+  println(cameras);
+
+  if (cameras.length < 16) {
+    iSight = true;
+  } else {
+    iSight = false;
+  }
+
+  if (iSight) {
+    cam_width = 640;
+    cam_height = 480;
+    cam_number = 0;
+  } else {
+    cam_width = 1280;
+    cam_height = 960;
+    cam_number = 15;
+  }
+
+  cam = new Capture(this, cameras[cam_number]);
+  cam.start();
+}
+
 void draw() {
     // Tag detection and update buffer
     if (cam.available() == true) {
       cam.read();
       tags = ar_detect.detect_tags(cam, confidence);
+      if (tags == null) {
+        initCamera();
+        return;
+      }
     }
 
     if (init_on) {

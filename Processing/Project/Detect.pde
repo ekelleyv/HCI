@@ -61,11 +61,10 @@ class Detect {
 		} catch (Exception e) {
 			System.out.println("We caught the exception.  Yay!");
 			this.nya = new MultiMarker(project, cam_width, cam_height, cam_param, NyAR4PsgConfig.CONFIG_DEFAULT);
-			System.out.println("Caught.");
-		} finally {
-			System.out.println("Finally.");
-			return tags;
+			System.out.println("Caught 1.");
+			return null;
 		}
+		return tags;
 	}
 
 	// this function loads .patt filenames into a list of Strings based on a full path to a directory (relies on java.io)

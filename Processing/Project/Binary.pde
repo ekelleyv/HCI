@@ -5,6 +5,9 @@ public class Binary implements Application {
 	private HashMap<Integer, String> numbers = new HashMap<Integer, String>();
 	private HashMap<Integer, Integer> bases = new HashMap<Integer, Integer>();
 
+  private float x = 0;
+  private float y = 0;
+
   public void init(int im_width, int im_height) {
   	// Add the numbers to the library
   	for (int i = 0; i < 16; i++) {
@@ -23,7 +26,16 @@ public class Binary implements Application {
   
   // called every time in the draw loop
   public void update(TagLibrary tl, PGraphics pg) {
-    try {
+
+    /*
+    initPrintScreen(pg, 0, height / 2);
+    printScreen(pg, "Hello", false);
+    printScreen(pg, 2, true);
+    printScreen(pg, "World!", false);
+    printScreen(pg, 2, true);
+    */
+
+    // Initialize Background
   	pg.background(0, 0, 128);
 
     List<TagRow> rows = tl.getTagRows();
@@ -48,7 +60,7 @@ public class Binary implements Application {
     // Read Input String
     int iBase;
     if (!isBase(longRow.get(0))) {
-    	// System.out.println("First tag in row not a base tag");
+    	System.out.println("First tag in row not a base tag");
       return;
     } else {
     	iBase = base(longRow.get(0));
@@ -81,14 +93,21 @@ public class Binary implements Application {
     		}
 
     		String output = Integer.toString(value, oBase).toUpperCase();
+
         // System.out.println("Value = " + value + " Output = " + output);
 
-    		printOutput(row, output, pg);
+        initPrintScreen(pg, row.getMaxX() + 20, row.getMaxY());
+
+        printScreen(pg, output + " = ", false);
+        for (int i = 0; i < output.length(); i++) {
+          printScreen(pg, Integer.parseInt(Character.toString(output.charAt(i)), oBase), false);
+          printScreen(pg, 'x', false);
+          printScreen(pg, oBase, false);
+          printScreen(pg, output.length() - i - 1, true);
+
+          if (i + 1 < output.length()) printScreen(pg, " + ", false);
+        }
     	}
-    }
-    } catch(Exception e) {
-      System.out.println("Why error!!!");
-      return;
     }
   }
 
@@ -109,9 +128,36 @@ public class Binary implements Application {
   }
 
   private void printOutput(TagRow row, String output, PGraphics pg) {
+    initPrintScreen(pg, row.getMinX() + 100 , row.getMaxY());
+    printScreen(pg, output, false);
+  }
+
+  private void initPrintScreen(PGraphics pg, double x, double y) {
+    this.x = (float) x;
+    this.y = (float) y;
+
     pg.fill(255, 255, 0);
     // pg.noStroke();
-    pg.textSize(64);
-    pg.text(output, (float) row.getMinX() + 200, (float) row.getMaxY());
+  }
+
+  private void  printScreen(PGraphics pg, int i, boolean exponent) {
+    printScreen(pg, Integer.toString(i), exponent);
+  }
+
+
+  private void printScreen(PGraphics pg, String s, boolean exponent) {
+    for (char c : s.toCharArray()) {
+      printScreen(pg, c, exponent);
+    }
+  }
+
+  private void printScreen(PGraphics pg, char c, boolean exponent) {
+    if (exponent) pg.textSize(32);
+    else pg.textSize(64);
+
+    if (exponent) pg.text(c, x, y - 30);
+    else pg.text(c, x, y);
+
+    x += pg.textWidth(c);
   }
 }
