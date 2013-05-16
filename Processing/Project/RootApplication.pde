@@ -10,6 +10,8 @@ public class RootApplication implements Application {
 
 		applications.put(133, new TOYProgram());
 		applications.put(138, new Binary());
+		applications.put(139, new Poster());
+
 
 		for (Application a : applications.values()) {
 			a.init(w, h);
