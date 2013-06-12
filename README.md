@@ -1,4 +1,4 @@
 Human-Computer Interfaces
 ===
 
-Arduino code for COS 436
+Code for COS 436. Includes final project.
